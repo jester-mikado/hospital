@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import requests
 
-API_URL = "http://127.0.0.1:8000"
+API_URL = "https://hospital-management-p1pj.onrender.com"
 
 def check_role(request, allowed_role):
 
