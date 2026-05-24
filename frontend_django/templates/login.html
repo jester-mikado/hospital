@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="hero">
+    <h1>Welcome Back</h1>
+    <p>Login to continue to Clinic+</p>
+</div>
+
+<div class="container">
+
+    <form method="POST" class="form-card">
+
+        {% csrf_token %}
+
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Enter username" required>
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter password" required>
+
+        <button class="btn" type="submit">
+            Login
+        </button>
+
+        <br><br>
+
+        <p>
+            Don't have an account?
+            <a href="/register/">Register</a>
+        </p>
+
+    </form>
+
+</div>
+
+{% endblock %}

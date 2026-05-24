@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="hero">
+    <h1>Admin Dashboard</h1>
+    <p>Manage users, appointments, and slots.</p>
+</div>
+
+<div class="container">
+
+    <h2>Users</h2>
+
+    <div class="card-grid">
+
+        {% for user in users %}
+
+            <div class="card">
+                <h2>{{ user.username }}</h2>
+                <p class="status">Role: {{ user.role }}</p>
+                <p>User ID: {{ user.id }}</p>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+    <br><br>
+
+    <h2>Appointments</h2>
+
+    <div class="card-grid">
+
+        {% for appointment in appointments %}
+
+            <div class="card">
+                <span class="badge">{{ appointment.specialist }}</span>
+
+                <h2>{{ appointment.patient_name }}</h2>
+
+                <p>Reason: {{ appointment.reason }}</p>
+                <p>Status: {{ appointment.status }}</p>
+
+                <a class="btn danger" href="/admin/delete-appointment/{{ appointment.id }}/">
+                    Delete Appointment
+                </a>
+            </div>
+
+        {% empty %}
+
+            <p>No appointments available.</p>
+
+        {% endfor %}
+
+    </div>
+
+    <br><br>
+
+    <h2>Slots</h2>
+
+    <div class="card-grid">
+
+        {% for slot in slots %}
+
+            <div class="card">
+                <span class="badge">{{ slot.specialist }}</span>
+
+                <h2>{{ slot.time }}</h2>
+
+                <p>Status: {{ slot.status }}</p>
+                <p>Doctor ID: {{ slot.doctor_id }}</p>
+
+                <a class="btn danger" href="/admin/delete-slot/{{ slot.id }}/">
+                    Delete Slot
+                </a>
+            </div>
+
+        {% empty %}
+
+            <p>No slots available.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

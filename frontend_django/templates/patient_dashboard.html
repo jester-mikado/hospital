@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="hero">
+    <h1>Book your doctor appointment easily</h1>
+    <p>Choose a specialist, check available slots, and manage your appointments.</p>
+</div>
+
+<div class="container">
+
+    <form method="GET">
+        <select name="specialist">
+            <option value="All">All Specialists</option>
+            <option value="General">General</option>
+            <option value="Cardiologist">Cardiologist</option>
+            <option value="Orthopedic">Orthopedic</option>
+            <option value="Neurologist">Neurologist</option>
+            <option value="Dermatologist">Dermatologist</option>
+        </select>
+
+        <button class="btn" type="submit">Filter Doctors</button>
+    </form>
+
+    <div class="card-grid">
+
+        {% for doctor in doctors %}
+
+            {% if doctor.name %}
+
+                <div class="card">
+                    <span class="badge">{{ doctor.specialist }}</span>
+
+                    <h2>Dr. {{ doctor.name }}</h2>
+
+                    <p>Available for consultation</p>
+
+                    <a class="btn" href="/doctor-slots/{{ doctor.id }}/">
+                        View Slots
+                    </a>
+                </div>
+
+            {% endif %}
+
+        {% empty %}
+
+            <p>No doctors available.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

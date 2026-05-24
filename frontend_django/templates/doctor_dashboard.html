@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="hero">
+    <h1>Doctor Dashboard</h1>
+    <p>Manage patient appointment requests.</p>
+
+    <br>
+
+    <a class="btn" href="/add-slot/">Add Slot</a>
+</div>
+
+<div class="container">
+
+    <form method="GET">
+        <select name="status">
+            <option value="All">All Current Appointments</option>
+            <option value="pending">Pending</option>
+            <option value="accepted">Accepted</option>
+        </select>
+
+        <button class="btn" type="submit">Filter</button>
+    </form>
+
+    <div class="card-grid">
+
+        {% for appointment in appointments %}
+
+        <div class="card">
+            <span class="badge">{{ appointment.specialist }}</span>
+
+            <h2>{{ appointment.patient_name }}</h2>
+
+            <p>Age: {{ appointment.patient_age }}</p>
+            <p>Reason: {{ appointment.reason }}</p>
+            <p class="status">Status: {{ appointment.status }}</p>
+
+            {% if appointment.status == "pending" %}
+
+            <a class="btn success" href="/accept/{{ appointment.id }}/">
+                Accept
+            </a>
+
+            <br><br>
+
+            <a class="btn danger" href="/reject/{{ appointment.id }}/">
+                Reject
+            </a>
+
+            {% endif %}
+        </div>
+
+        {% empty %}
+
+        <p>No appointments found.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

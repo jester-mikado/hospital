@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="hero">
+    <h1>Available Slots</h1>
+    <p>Choose a suitable time slot for your appointment.</p>
+</div>
+
+<div class="container">
+
+    <form method="GET">
+        <select name="specialist" required>
+            <option value="">Choose Specialist</option>
+            <option value="General">General</option>
+            <option value="Cardiologist">Cardiologist</option>
+            <option value="Orthopedic">Orthopedic</option>
+            <option value="Neurologist">Neurologist</option>
+            <option value="Dermatologist">Dermatologist</option>
+        </select>
+
+        <button class="btn" type="submit">Search Slots</button>
+    </form>
+
+    <div class="card-grid">
+
+        {% for slot in slots %}
+
+            <div class="card">
+                <span class="badge">{{ slot.specialist }}</span>
+
+                <h2>{{ slot.time }}</h2>
+
+                <p class="status">Status: {{ slot.status }}</p>
+
+                {% if slot.status == "available" %}
+                    <a class="btn" href="/book/{{ slot.id }}/{{ doctor_id }}/">
+                        Book Slot
+                    </a>
+                {% endif %}
+            </div>
+
+        {% empty %}
+
+            <p>No slots available.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

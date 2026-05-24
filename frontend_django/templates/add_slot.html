@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="hero">
+    <h1>Add Slot</h1>
+    <p>Create available time slot for patients.</p>
+</div>
+
+<div class="container">
+
+    <form method="POST" class="card">
+
+        {% csrf_token %}
+
+        <label>Specialist</label>
+        <input type="text" value="{{ specialist }}" readonly>
+
+        <label>Select Time Slot</label>
+        <select name="time" required>
+            <option value="">Choose Time</option>
+            <option>1 AM - 2 AM</option>
+            <option>2 AM - 3 AM</option>
+            <option>3 AM - 4 AM</option>
+            <option>9 AM - 10 AM</option>
+            <option>10 AM - 11 AM</option>
+            <option>11 AM - 12 PM</option>
+            <option>2 PM - 3 PM</option>
+            <option>3 PM - 4 PM</option>
+            <option>4 PM - 5 PM</option>
+        </select>
+
+        <button class="btn" type="submit">
+            Add Slot
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="hero">
+    <h1>Doctor History</h1>
+    <p>Completed and denied appointment records.</p>
+</div>
+
+<div class="container">
+    <div class="card-grid">
+
+        {% for appointment in history %}
+
+            <div class="card">
+                <span class="badge">{{ appointment.specialist }}</span>
+                <h2>{{ appointment.patient_name }}</h2>
+                <p>Age: {{ appointment.patient_age }}</p>
+                <p>Reason: {{ appointment.reason }}</p>
+                <p class="status">Status: {{ appointment.status }}</p>
+            </div>
+
+        {% empty %}
+
+            <p>No history yet.</p>
+
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endblock %}
