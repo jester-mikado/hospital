@@ -14,7 +14,14 @@ def check_role(request, allowed_role):
 # LOGIN
 
 def landing_page(request):
-    return render(request, "landing.html")
+
+    doctors = requests.get(f"{API_URL}/doctors").json()
+    reviews = requests.get(f"{API_URL}/reviews").json()
+
+    return render(request, "landing.html", {
+        "doctors": doctors,
+        "reviews": reviews
+    })
 
 
 def login_page(request):
