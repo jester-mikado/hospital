@@ -2,52 +2,29 @@
 
 {% block content %}
 
-<div class="hero">
-    <h1>Available Slots</h1>
-    <p>Choose a suitable time slot for your appointment.</p>
-</div>
+<div class="page-shell">
+    <section class="hero center fade-up">
+        <div class="eyebrow">Available Timings</div>
+        <h1>Choose Your <span>Slot</span></h1>
+        <p>Select a specialist filter and book a comfortable consultation time.</p>
+    </section>
 
-<div class="container">
-
-    <form method="GET">
-        <select name="specialist" required>
-            <option value="">Choose Specialist</option>
-            <option value="General">General</option>
-            <option value="Cardiologist">Cardiologist</option>
-            <option value="Orthopedic">Orthopedic</option>
-            <option value="Neurologist">Neurologist</option>
-            <option value="Dermatologist">Dermatologist</option>
-        </select>
-
-        <button class="btn" type="submit">Search Slots</button>
-    </form>
-
-    <div class="card-grid">
-
+    <div class="grid fade-up">
         {% for slot in slots %}
-
             <div class="card">
-                <span class="badge">{{ slot.specialist }}</span>
-
-                <h2>{{ slot.time }}</h2>
-
+                <span class="badge gold">{{ slot.specialist }}</span>
+                <h2 style="font-size:32px;margin:16px 0">{{ slot.time }}</h2>
                 <p class="status">Status: {{ slot.status }}</p>
 
                 {% if slot.status == "available" %}
-                    <a class="btn" href="/book/{{ slot.id }}/{{ doctor_id }}/">
-                        Book Slot
-                    </a>
+                    <br>
+                    <a class="btn full" href="/book/{{ slot.id }}/{{ doctor_id }}/">Book Slot →</a>
                 {% endif %}
             </div>
-
         {% empty %}
-
-            <p>No slots available.</p>
-
+            <p class="empty">No slots available.</p>
         {% endfor %}
-
     </div>
-
 </div>
 
 {% endblock %}

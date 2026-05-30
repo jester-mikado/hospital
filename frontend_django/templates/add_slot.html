@@ -2,16 +2,21 @@
 
 {% block content %}
 
-<div class="hero">
-    <h1>Add Slot</h1>
-    <p>Create available time slot for patients.</p>
-</div>
+<div class="page-shell">
+    <section class="hero center fade-up">
+        <div class="eyebrow">Availability Setup</div>
+        <h1>Add <span>Slot</span></h1>
+        <p>Create available time slots and view your existing schedule.</p>
+    </section>
 
-<div class="container">
-
-    <form method="POST" class="card">
-
+    <form method="POST" class="panel fade-up" style="max-width:640px;margin:auto">
         {% csrf_token %}
+
+        {% if error %}
+            <p style="color:#f87171;font-weight:800;margin-bottom:18px">
+                {{ error }}
+            </p>
+        {% endif %}
 
         <label>Specialist</label>
         <input type="text" value="{{ specialist }}" readonly>
@@ -30,12 +35,40 @@
             <option>4 PM - 5 PM</option>
         </select>
 
-        <button class="btn" type="submit">
-            Add Slot
-        </button>
-
+        <button class="btn full" type="submit">Add Slot →</button>
     </form>
 
+    <br><br>
+
+    <div class="section-head fade-up">
+        <h2>My Existing Slots</h2>
+    </div>
+
+    <div class="grid fade-up">
+
+        {% for slot in slots %}
+
+            <div class="card">
+                <span class="badge gold">{{ slot.specialist }}</span>
+
+                <h2 style="margin:14px 0">
+                    {{ slot.time }}
+                </h2>
+
+                <p class="status">
+                    Status: {{ slot.status }}
+                </p>
+            </div>
+
+        {% empty %}
+
+            <p class="empty">
+                No slots added yet.
+            </p>
+
+        {% endfor %}
+
+    </div>
 </div>
 
 {% endblock %}

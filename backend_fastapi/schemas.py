@@ -32,3 +32,13 @@ class AppointmentCreate(BaseModel):
     patient_age: int
     reason: str
     specialist: str
+
+class ReviewCreate(BaseModel):
+    appointment_id: int
+    patient_id: int
+    doctor_id: int
+    patient_name: str
+    doctor_name: str
+    specialist: str
+    rating: int
+    review_text: str

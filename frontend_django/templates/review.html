@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-shell">
+    <section class="hero center fade-up">
+        <div class="eyebrow">Patient Feedback</div>
+        <h1>Rate Your <span>Experience</span></h1>
+        <p>Share your review for this completed appointment.</p>
+    </section>
+
+    <form method="POST" class="panel fade-up" style="max-width:680px;margin:auto">
+        {% csrf_token %}
+
+        <div class="card" style="margin-bottom:24px">
+            <span class="badge">{{ appointment.specialist }}</span>
+
+            <h2 style="margin:14px 0">
+                Dr. {{ doctor_name }}
+            </h2>
+
+            <p>
+                Patient: {{ appointment.patient_name }}
+            </p>
+
+            <p>
+                Reason: {{ appointment.reason }}
+            </p>
+        </div>
+
+        <label>Rating</label>
+        <select name="rating" required>
+            <option value="">Choose Rating</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Good</option>
+            <option value="3">⭐⭐⭐ Average</option>
+            <option value="2">⭐⭐ Poor</option>
+            <option value="1">⭐ Very Poor</option>
+        </select>
+
+        <label>Review</label>
+        <textarea
+            name="review_text"
+            placeholder="Write your experience..."
+            required
+        ></textarea>
+
+        <button class="btn full" type="submit">
+            Submit Review →
+        </button>
+    </form>
+</div>
+
+{% endblock %}

@@ -423,3 +423,65 @@ def delete_slot(
     db.commit()
 
     return {"message": "Slot deleted"}
+
+@app.get("/reviews")
+def get_reviews(db: Session = Depends(get_db)):
+    return db.query(models.Review).all()
+
+@app.post("/reviews")
+def create_review(
+    review: schemas.ReviewCreate,
+    db: Session = Depends(get_db)
+):
+
+    print(review)
+
+    existing_review = db.query(models.Review).filter(
+        models.Review.appointment_id == review.appointment_id
+    ).first()
+
+    if existing_review:
+        raise HTTPException(
+            status_code=400,
+            detail="Review already submitted for this appointment"
+        )
+
+    new_review = models.Review(
+        appointment_id=review.appointment_id,
+        patient_id=review.patient_id,
+        doctor_id=review.doctor_id,
+        patient_name=review.patient_name,
+        doctor_name=review.doctor_name,
+        specialist=review.specialist,
+        rating=review.rating,
+        review_text=review.review_text
+    )
+
+    db.add(new_review)
+    db.commit()
+    db.refresh(new_review)
+
+    return {
+        "message": "Review submitted successfully",
+        "review_id": new_review.id
+    }
+
+
+@app.delete("/admin/reviews/{review_id}")
+def delete_review(
+    review_id: int,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(admin_required)
+):
+
+    review = db.query(models.Review).filter(
+        models.Review.id == review_id
+    ).first()
+
+    if not review:
+        raise HTTPException(status_code=404, detail="Review not found")
+
+    db.delete(review)
+    db.commit()
+
+    return {"message": "Review deleted successfully"}

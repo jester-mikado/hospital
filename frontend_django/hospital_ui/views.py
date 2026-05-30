@@ -12,6 +12,11 @@ def check_role(request, allowed_role):
     return True
 
 # LOGIN
+
+def landing_page(request):
+    return render(request, "landing.html")
+
+
 def login_page(request):
 
     if request.method == "POST":
@@ -174,13 +179,14 @@ def reject_appointment(request, appointment_id):
 
 def add_slot(request):
 
+    if not check_role(request, "doctor"):
+        return redirect("login")
+
     user_id = request.session.get("user_id")
 
-    doctor_response = requests.get(
+    doctor = requests.get(
         f"{API_URL}/doctor/by-user/{user_id}"
-    )
-
-    doctor = doctor_response.json()
+    ).json()
 
     doctor_id = doctor["id"]
     specialist = doctor["specialist"]
@@ -189,7 +195,7 @@ def add_slot(request):
 
         time = request.POST.get("time")
 
-        requests.post(
+        response = requests.post(
             f"{API_URL}/slots",
             json={
                 "doctor_id": doctor_id,
@@ -198,10 +204,26 @@ def add_slot(request):
             }
         )
 
+        if response.status_code != 200:
+            slots = requests.get(
+                f"{API_URL}/slots/{doctor_id}"
+            ).json()
+
+            return render(request, "add_slot.html", {
+                "specialist": specialist,
+                "slots": slots,
+                "error": "This slot already exists"
+            })
+
         return redirect("doctor_dashboard")
 
+    slots = requests.get(
+        f"{API_URL}/slots/{doctor_id}"
+    ).json()
+
     return render(request, "add_slot.html", {
-        "specialist": specialist
+        "specialist": specialist,
+        "slots": slots
     })
 
 def admin_dashboard(request):
@@ -212,11 +234,15 @@ def admin_dashboard(request):
     users = requests.get(f"{API_URL}/admin/users").json()
     appointments = requests.get(f"{API_URL}/admin/appointments").json()
     slots = requests.get(f"{API_URL}/admin/slots").json()
+    reviews = requests.get(
+        f"{API_URL}/reviews"
+    ).json()
 
     return render(request, "admin_dashboard.html", {
         "users": users,
         "appointments": appointments,
-        "slots": slots
+        "slots": slots,
+        "reviews": reviews
     })
     
 def doctor_slots(request, doctor_id):
@@ -297,7 +323,7 @@ def done_appointment(request, appointment_id):
         f"{API_URL}/appointments/{appointment_id}/done"
     )
 
-    return redirect("patient_dashboard")
+    return redirect("review_page", appointment_id=appointment_id)
 
 def home_page(request):
 
@@ -319,7 +345,7 @@ def logout_page(request):
 
     request.session.flush()
 
-    return redirect("login")
+    return redirect("landing")
 
 def delete_appointment(request, appointment_id):
 
@@ -432,3 +458,78 @@ def doctor_history(request):
     return render(request, "doctor_history.html", {
         "history": history
     })
+
+def review_page(request, appointment_id):
+
+    if not check_role(request, "patient"):
+        return redirect("login")
+
+    user_id = request.session.get("user_id")
+
+    patient = requests.get(
+        f"{API_URL}/patient/by-user/{user_id}"
+    ).json()
+
+    appointments = requests.get(
+        f"{API_URL}/patient/appointments/{patient['id']}"
+    ).json()
+
+    selected_appointment = None
+
+    for appointment in appointments:
+        if appointment["id"] == appointment_id:
+            selected_appointment = appointment
+    if selected_appointment is None:
+        return redirect("patient_history")
+
+    doctors = requests.get(
+        f"{API_URL}/doctors"
+    ).json()
+
+    doctor_name = ""
+
+    for doctor in doctors:
+        if doctor["id"] == selected_appointment["doctor_id"]:
+            doctor_name = doctor["name"]
+
+    if request.method == "POST":
+
+        rating = request.POST.get("rating")
+        review_text = request.POST.get("review_text")
+
+        response = requests.post(
+            f"{API_URL}/reviews",
+            json={
+                "appointment_id": appointment_id,
+                "patient_id": patient["id"],
+                "doctor_id": selected_appointment["doctor_id"],
+                "patient_name": selected_appointment["patient_name"],
+                "doctor_name": doctor_name,
+                "specialist": selected_appointment["specialist"],
+                "rating": int(rating),
+                "review_text": review_text
+            }
+        )
+
+        return redirect("patient_history")
+
+    return render(request, "review.html", {
+        "appointment": selected_appointment,
+        "doctor_name": doctor_name
+    })
+
+def delete_review(request, review_id):
+
+    if not check_role(request, "admin"):
+        return redirect("login")
+
+    token = request.session.get("token")
+
+    requests.delete(
+        f"{API_URL}/admin/reviews/{review_id}",
+        headers={
+            "Authorization": f"Bearer {token}"
+        }
+    )
+
+    return redirect("admin_dashboard")

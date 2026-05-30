@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --navy:#0a1628;--navy2:#0f2040;--sky:#e8f4fd;--teal:#00b4d8;--teal2:#0096c7;--gold:#f4a932;--white:#ffffff;--soft:#f0f7ff;--mint:#d0f0e8;
+    --text-dark:#0a1628;--text-muted:#4a6080;--text-light:#8ba0b8;
+  }
+  body{font-family:'DM Sans',sans-serif;background:var(--navy);overflow-x:hidden;color:var(--white);cursor:none}
+  .cursor{width:14px;height:14px;border:2px solid var(--teal);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform 0.15s,opacity 0.15s;mix-blend-mode:difference}
+  .cursor-dot{width:4px;height:4px;background:var(--teal);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform 0.05s}
+
+  /* NAVBAR */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(10,22,40,0.8);border-bottom:1px solid rgba(0,180,216,0.15)}
+  .logo{display:flex;align-items:center;gap:10px;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white)}
+  .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--teal),var(--gold));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;animation:pulse-logo 3s ease-in-out infinite}
+  @keyframes pulse-logo{0%,100%{box-shadow:0 0 0 0 rgba(0,180,216,0.4)}50%{box-shadow:0 0 0 12px rgba(0,180,216,0)}}
+  .nav-links{display:flex;gap:36px;list-style:none}
+  .nav-links a{color:rgba(255,255,255,0.75);text-decoration:none;font-size:14px;font-weight:500;letter-spacing:0.5px;transition:color 0.3s;position:relative}
+  .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--teal);transition:width 0.3s;border-radius:2px}
+  .nav-links a:hover{color:var(--white)}
+  .nav-links a:hover::after{width:100%}
+  .nav-cta{background:var(--teal);color:var(--white);padding:10px 24px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.3s;letter-spacing:0.5px}
+  .nav-cta:hover{background:var(--teal2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,180,216,0.4)}
+
+  /* HERO */
+  .hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:120px 60px 80px;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 70% 50%,rgba(0,180,216,0.08),transparent),radial-gradient(ellipse 40% 60% at 20% 80%,rgba(244,169,50,0.06),transparent);pointer-events:none}
+  .hero-bg-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;animation:float-orb 8s ease-in-out infinite}
+  .orb1{width:500px;height:500px;background:rgba(0,180,216,0.07);top:-100px;right:-100px;animation-delay:0s}
+  .orb2{width:300px;height:300px;background:rgba(244,169,50,0.06);bottom:-50px;left:30%;animation-delay:3s}
+  @keyframes float-orb{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-20px) scale(1.05)}}
+
+  .hero-text{position:relative;z-index:2}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,180,216,0.12);border:1px solid rgba(0,180,216,0.3);border-radius:50px;padding:8px 18px;font-size:12px;font-weight:600;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:28px;animation:fade-up 0.8s ease both}
+  .hero-badge::before{content:'';width:8px;height:8px;background:var(--teal);border-radius:50%;animation:blink 2s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+  .hero-h1{font-family:'Playfair Display',serif;font-size:clamp(44px,5vw,72px);font-weight:900;line-height:1.05;margin-bottom:24px;animation:fade-up 0.8s 0.1s ease both}
+  .hero-h1 span{color:var(--teal);display:block}
+  .hero-h1 em{color:var(--gold);font-style:normal}
+  .hero-sub{font-size:17px;color:rgba(255,255,255,0.65);line-height:1.75;max-width:460px;margin-bottom:40px;font-weight:300;animation:fade-up 0.8s 0.2s ease both}
+  .hero-actions{display:flex;gap:16px;flex-wrap:wrap;animation:fade-up 0.8s 0.3s ease both}
+  .btn-primary{background:linear-gradient(135deg,var(--teal),var(--teal2));color:white;padding:16px 36px;border-radius:50px;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all 0.3s;letter-spacing:0.3px;box-shadow:0 8px 32px rgba(0,180,216,0.35)}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,180,216,0.5)}
+  .btn-ghost{background:transparent;color:white;padding:16px 36px;border-radius:50px;font-size:15px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.25);transition:all 0.3s}
+  .btn-ghost:hover{border-color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.06)}
+  .hero-stats{display:flex;gap:40px;margin-top:48px;animation:fade-up 0.8s 0.4s ease both}
+  .stat{text-align:left}
+  .stat-num{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--white);line-height:1}
+  .stat-num span{color:var(--teal)}
+  .stat-label{font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;text-transform:uppercase;letter-spacing:0.8px;font-weight:500}
+
+  @keyframes fade-up{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+  /* 3D SCENE */
+  .hero-scene{position:relative;height:600px;display:flex;align-items:center;justify-content:center;z-index:2}
+  .scene-card{background:linear-gradient(135deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:32px;backdrop-filter:blur(20px);width:380px;position:relative;animation:float-card 6s ease-in-out infinite;transform-style:preserve-3d}
+  @keyframes float-card{0%,100%{transform:translateY(0) rotate3d(1,1,0,0deg)}25%{transform:translateY(-12px) rotate3d(1,0,0,2deg)}75%{transform:translateY(8px) rotate3d(0,1,0,-2deg)}}
+  .scene-card::before{content:'';position:absolute;inset:-1px;border-radius:28px;background:linear-gradient(135deg,rgba(0,180,216,0.3),transparent 50%,rgba(244,169,50,0.2));z-index:-1}
+  .floating-badge{position:absolute;background:rgba(255,255,255,0.95);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 32px rgba(0,0,0,0.3);font-size:12px;color:#1a2a3a;font-weight:600}
+  .badge-top{top:-20px;left:20px;animation:float-badge-1 5s ease-in-out infinite}
+  .badge-right{right:-30px;top:50%;animation:float-badge-2 6s ease-in-out infinite}
+  .badge-bottom{bottom:-20px;right:20px;animation:float-badge-3 4s ease-in-out infinite}
+  @keyframes float-badge-1{0%,100%{transform:translate(0,0)}50%{transform:translate(-5px,-10px)}}
+  @keyframes float-badge-2{0%,100%{transform:translate(0,0)}50%{transform:translate(8px,5px)}}
+  @keyframes float-badge-3{0%,100%{transform:translate(0,0)}50%{transform:translate(5px,-8px)}}
+  .badge-icon{width:24px;height:24px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .badge-icon.green{background:rgba(0,200,100,0.15);color:#00c864}
+  .badge-icon.blue{background:rgba(0,180,216,0.15);color:var(--teal)}
+  .badge-icon.gold{background:rgba(244,169,50,0.15);color:var(--gold)}
+
+  /* SVG DOCTOR CHARACTER */
+  .doctor-wrap{display:flex;justify-content:center;margin-bottom:16px;position:relative}
+  .doc-glow{position:absolute;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(0,180,216,0.25),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:pulse-glow 3s ease-in-out infinite}
+  @keyframes pulse-glow{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.6}50%{transform:translate(-50%,-50%) scale(1.3);opacity:1}}
+  .card-info{margin-top:12px}
+  .card-name{font-size:18px;font-weight:700;color:white;font-family:'Playfair Display',serif}
+  .card-role{font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;text-transform:uppercase;letter-spacing:0.8px}
+  .card-divider{height:1px;background:rgba(255,255,255,0.1);margin:16px 0}
+  .card-metrics{display:flex;justify-content:space-between}
+  .metric-item{text-align:center}
+  .metric-val{font-size:20px;font-weight:700;color:var(--teal)}
+  .metric-lbl{font-size:10px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.5px}
+  .avail-row{display:flex;align-items:center;gap:8px;margin-top:16px}
+  .avail-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:blink 2s ease-in-out infinite}
+  .avail-txt{font-size:12px;color:rgba(255,255,255,0.6)}
+  .book-mini{margin-left:auto;background:var(--teal);color:white;border:none;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer}
+
+  /* SERVICES */
+  .section{padding:100px 60px;position:relative}
+  .section-label{text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:600;color:var(--teal);margin-bottom:14px}
+  .section-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,52px);font-weight:700;color:var(--white);margin-bottom:16px;line-height:1.15}
+  .section-sub{font-size:16px;color:rgba(255,255,255,0.55);max-width:520px;line-height:1.75;font-weight:300}
+  .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px}
+  .service-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:32px;transition:all 0.4s;position:relative;overflow:hidden;cursor:pointer}
+  .service-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,180,216,0.08),transparent);opacity:0;transition:opacity 0.4s}
+  .service-card:hover{transform:translateY(-8px);border-color:rgba(0,180,216,0.3);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+  .service-card:hover::before{opacity:1}
+  .service-icon-wrap{width:60px;height:60px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;position:relative}
+  .service-icon-wrap svg{width:32px;height:32px;position:relative;z-index:1}
+  .s-num{position:absolute;top:20px;right:20px;font-size:48px;font-weight:900;color:rgba(255,255,255,0.03);font-family:'Playfair Display',serif;line-height:1}
+  .service-title{font-size:18px;font-weight:600;color:var(--white);margin-bottom:10px}
+  .service-desc{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7;font-weight:300}
+  .service-link{display:inline-flex;align-items:center;gap:6px;margin-top:20px;font-size:13px;font-weight:600;color:var(--teal);text-decoration:none;transition:gap 0.3s}
+  .service-card:hover .service-link{gap:10px}
+
+  /* DOCTORS SECTION */
+  .doctors-section{background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05)}
+  .doctors-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:60px}
+  .doctor-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;overflow:hidden;transition:all 0.4s;cursor:pointer}
+  .doctor-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,0.4);border-color:rgba(0,180,216,0.25)}
+  .doctor-visual{height:220px;display:flex;align-items:center;justify-content:center;position:relative}
+  .doc-bg-circle{position:absolute;width:160px;height:160px;border-radius:50%;opacity:0.15}
+  .doctor-info{padding:20px}
+  .doctor-name{font-size:15px;font-weight:600;color:var(--white);margin-bottom:2px}
+  .doctor-spec{font-size:12px;color:var(--teal);font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+  .doctor-rating{display:flex;align-items:center;gap:6px;margin-top:10px}
+  .stars{color:var(--gold);font-size:11px}
+  .rating-txt{font-size:12px;color:rgba(255,255,255,0.45)}
+
+  /* HOW IT WORKS */
+  .steps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:60px;position:relative}
+  .steps-row::before{content:'';position:absolute;top:36px;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,180,216,0.3),transparent)}
+  .step-item{text-align:center;padding:0 20px;position:relative}
+  .step-circle{width:72px;height:72px;border-radius:50%;border:2px solid rgba(0,180,216,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:22px;position:relative;background:rgba(0,180,216,0.06);transition:all 0.4s}
+  .step-item:hover .step-circle{border-color:var(--teal);background:rgba(0,180,216,0.12);transform:scale(1.08)}
+  .step-num{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--teal);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .step-title{font-size:15px;font-weight:600;color:var(--white);margin-bottom:8px}
+  .step-desc{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.65;font-weight:300}
+
+  /* TESTIMONIALS */
+  .testimonials{background:rgba(0,180,216,0.03)}
+  .testimonial-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:60px}
+  .testimonial-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px;position:relative;transition:all 0.3s}
+  .testimonial-card:hover{border-color:rgba(0,180,216,0.2);transform:translateY(-4px)}
+  .t-quote{font-size:40px;font-family:'Playfair Display',serif;color:rgba(0,180,216,0.3);line-height:0.5;margin-bottom:12px}
+  .t-text{font-size:15px;color:rgba(255,255,255,0.7);line-height:1.75;font-weight:300;font-style:italic}
+  .t-author{display:flex;align-items:center;gap:12px;margin-top:20px}
+  .t-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+  .t-name{font-size:14px;font-weight:600;color:var(--white)}
+  .t-detail{font-size:12px;color:rgba(255,255,255,0.4)}
+  .t-stars{color:var(--gold);font-size:12px;position:absolute;top:28px;right:28px}
+
+  /* CTA SECTION */
+  .cta-section{padding:100px 60px;text-align:center;position:relative;overflow:hidden}
+  .cta-blob{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(0,180,216,0.1),transparent 70%);pointer-events:none}
+  .cta-box{max-width:680px;margin:0 auto;position:relative;z-index:2}
+  .cta-title{font-family:'Playfair Display',serif;font-size:clamp(36px,4vw,58px);font-weight:700;line-height:1.15;margin-bottom:20px}
+  .cta-title em{color:var(--teal);font-style:normal}
+  .cta-sub{font-size:16px;color:rgba(255,255,255,0.55);margin-bottom:40px;font-weight:300;line-height:1.75}
+  .cta-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+  /* FOOTER */
+  footer{background:rgba(0,0,0,0.3);border-top:1px solid rgba(255,255,255,0.06);padding:60px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+  .footer-brand{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:12px}
+  .footer-desc{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.75;font-weight:300;max-width:240px}
+  .footer-col h4{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.6);margin-bottom:16px}
+  .footer-col ul{list-style:none}
+  .footer-col li{margin-bottom:10px}
+  .footer-col a{font-size:13px;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.3s}
+  .footer-col a:hover{color:var(--teal)}
+
+  /* SCROLL ANIMATIONS */
+  .reveal{opacity:0;transform:translateY(40px);transition:all 0.8s cubic-bezier(0.16,1,0.3,1)}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .reveal-left{opacity:0;transform:translateX(-40px);transition:all 0.8s cubic-bezier(0.16,1,0.3,1)}
+  .reveal-left.visible{opacity:1;transform:translateX(0)}
+  .reveal-right{opacity:0;transform:translateX(40px);transition:all 0.8s cubic-bezier(0.16,1,0.3,1)}
+  .reveal-right.visible{opacity:1;transform:translateX(0)}
+
+  /* 3D TILT */
+  .tilt{transform-style:preserve-3d;transition:transform 0.1s ease}
+  
+  /* Particle canvas */
+  #particles{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.4}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    MediCare<em style="color:var(--teal);font-style:normal">+</em>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#doctors">Doctors</a></li>
+    <li><a href="#services">Departments</a></li>
+    <li><a href="/login/">Appointments</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <button onclick="window.location.href='/login/'" class="nav-cta">Login / Book</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb1 hero-bg-orb"></div>
+  <div class="orb2 hero-bg-orb"></div>
+  <div class="hero-text">
+    <div class="hero-badge">🏥 Trusted by 50,000+ patients</div>
+    <h1 class="hero-h1">
+      World-Class<br>
+      <span>Healthcare</span>
+      <em> Redefined</em>
+    </h1>
+    <p class="hero-sub">Experience cutting-edge medical care delivered with compassion. Login is required to book and manage your appointments securely.</p>
+    <div class="hero-actions">
+      <button onclick="window.location.href='/login/'" class="btn-primary">Login to Book →</button>
+      <button onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})" class="btn-ghost">Explore Departments</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num" data-target="98">0<span>%</span></div>
+        <div class="stat-label">Patient Satisfaction</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="250">0<span>+</span></div>
+        <div class="stat-label">Expert Doctors</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="35">0<span>+</span></div>
+        <div class="stat-label">Years of Excellence</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3D Card Scene -->
+  <div class="hero-scene">
+    <div class="scene-card tilt" id="heroCard">
+      <!-- Floating badges -->
+      <div class="floating-badge badge-top">
+        <div class="badge-icon green">✓</div>
+        <span>Verified Specialist</span>
+      </div>
+      <div class="floating-badge badge-right" style="flex-direction:column;gap:4px;min-width:120px">
+        <span style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.5px">Next Available</span>
+        <span style="font-size:13px;font-weight:700;color:#0a1628">Today, 2:30 PM</span>
+      </div>
+      <div class="floating-badge badge-bottom">
+        <div class="badge-icon gold">★</div>
+        <span>4.9 Rating</span>
+      </div>
+
+      <div class="doctor-wrap">
+        <div class="doc-glow"></div>
+        <!-- Doctor SVG Character -->
+        <svg width="140" height="180" viewBox="0 0 140 180" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1">
+          <!-- Body/White coat -->
+          <ellipse cx="70" cy="155" rx="44" ry="35" fill="#e8f0fe" opacity="0.9"/>
+          <rect x="28" y="100" width="84" height="70" rx="12" fill="#ffffff"/>
+          <rect x="28" y="100" width="84" height="20" rx="10" fill="#e8f0fe"/>
+          <!-- Coat lapels -->
+          <path d="M70,120 L50,100 L28,115 Q35,145 50,160 L70,155 L90,160 Q105,145 112,115 L90,100 Z" fill="white" opacity="0.7"/>
+          <path d="M70,120 L55,100" stroke="#c5d5f0" stroke-width="1.5" fill="none"/>
+          <path d="M70,120 L85,100" stroke="#c5d5f0" stroke-width="1.5" fill="none"/>
+          <!-- Stethoscope -->
+          <path d="M50,115 Q40,130 45,145 Q48,155 60,155 Q72,155 75,143" stroke="#00b4d8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <circle cx="75" cy="143" r="5" fill="#00b4d8"/>
+          <!-- Badge on coat -->
+          <rect x="52" y="125" width="22" height="14" rx="3" fill="#00b4d8" opacity="0.9"/>
+          <text x="63" y="135" text-anchor="middle" font-size="7" fill="white" font-weight="700" font-family="DM Sans,sans-serif">MD</text>
+          <!-- Neck -->
+          <rect x="60" y="82" width="20" height="22" rx="8" fill="#f5c5a3"/>
+          <!-- Head -->
+          <ellipse cx="70" cy="65" rx="30" ry="32" fill="#f5c5a3"/>
+          <!-- Hair -->
+          <ellipse cx="70" cy="38" rx="30" ry="14" fill="#3d2c1e"/>
+          <rect x="40" y="35" width="60" height="18" rx="4" fill="#3d2c1e"/>
+          <!-- Ears -->
+          <ellipse cx="40" cy="65" rx="6" ry="8" fill="#f5c5a3"/>
+          <ellipse cx="100" cy="65" rx="6" ry="8" fill="#f5c5a3"/>
+          <!-- Eyes -->
+          <ellipse cx="58" cy="62" rx="5" ry="5.5" fill="white"/>
+          <ellipse cx="82" cy="62" rx="5" ry="5.5" fill="white"/>
+          <circle cx="59" cy="63" r="3.5" fill="#2d3748"/>
+          <circle cx="83" cy="63" r="3.5" fill="#2d3748"/>
+          <circle cx="60" cy="61.5" r="1.2" fill="white"/>
+          <circle cx="84" cy="61.5" r="1.2" fill="white"/>
+          <!-- Eyebrows -->
+          <path d="M53,55 Q58,52 63,55" stroke="#3d2c1e" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M77,55 Q82,52 87,55" stroke="#3d2c1e" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <!-- Smile -->
+          <path d="M60,75 Q70,82 80,75" stroke="#d4956a" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <!-- Arms -->
+          <rect x="10" y="105" width="22" height="52" rx="11" fill="white" transform="rotate(-10 21 131)"/>
+          <rect x="108" y="105" width="22" height="52" rx="11" fill="white" transform="rotate(10 119 131)"/>
+          <!-- Hands -->
+          <ellipse cx="18" cy="158" rx="12" ry="9" fill="#f5c5a3" transform="rotate(-10 18 158)"/>
+          <ellipse cx="122" cy="158" rx="12" ry="9" fill="#f5c5a3" transform="rotate(10 122 158)"/>
+          <!-- Clipboard in hand -->
+          <rect x="104" y="130" width="24" height="30" rx="3" fill="#fef3c7" transform="rotate(8 116 145)"/>
+          <rect x="110" y="127" width="12" height="5" rx="2" fill="#d4b896" transform="rotate(8 116 129)"/>
+          <line x1="108" y1="138" x2="124" y2="137" stroke="#94a3b8" stroke-width="1" transform="rotate(8 116 137)"/>
+          <line x1="108" y1="143" x2="124" y2="142" stroke="#94a3b8" stroke-width="1" transform="rotate(8 116 142)"/>
+          <line x1="108" y1="148" x2="120" y2="147" stroke="#94a3b8" stroke-width="1" transform="rotate(8 116 147)"/>
+          <!-- Cross on coat -->
+          <rect x="88" y="128" width="3" height="10" rx="1.5" fill="#ef4444"/>
+          <rect x="85" y="131" width="9" height="3" rx="1.5" fill="#ef4444"/>
+        </svg>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Dr. Sarah Chen</div>
+        <div class="card-role">Senior Cardiologist · MBBS, MD</div>
+        <div class="card-divider"></div>
+        <div class="card-metrics">
+          <div class="metric-item">
+            <div class="metric-val">12+</div>
+            <div class="metric-lbl">Years Exp</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-val">3.2k</div>
+            <div class="metric-lbl">Patients</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-val">4.9★</div>
+            <div class="metric-lbl">Rating</div>
+          </div>
+        </div>
+        <div class="avail-row">
+          <div class="avail-dot"></div>
+          <span class="avail-txt">Available for consultation</span>
+          <button class="book-mini">Book</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section" id="services">
+  <div class="section-label reveal">Our Specializations</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px">
+    <div>
+      <h2 class="section-title reveal">Comprehensive Medical<br>Services for Every Need</h2>
+    </div>
+    <p class="section-sub reveal">From routine checkups to complex surgeries, we provide end-to-end care guided by world-class specialists.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal" style="transition-delay:0.05s">
+      <div class="service-icon-wrap" style="background:rgba(0,180,216,0.12)">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M16 4a4 4 0 100 8 4 4 0 000-8z" fill="#00b4d8"/><path d="M6 28c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="#00b4d8" stroke-width="2" stroke-linecap="round"/><path d="M8 18l-3 4 3 4" stroke="#00b4d8" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+      </div>
+      <div class="s-num">01</div>
+      <div class="service-title">General Medicine</div>
+      <div class="service-desc">Comprehensive diagnosis and treatment for a wide range of medical conditions with our experienced physicians.</div>
+      <a href="#" class="service-link">Learn more →</a>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.1s">
+      <div class="service-icon-wrap" style="background:rgba(239,68,68,0.1)">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M16 4C10 4 5 9 5 16s5 12 11 12 11-5 11-12S22 4 16 4z" stroke="#ef4444" stroke-width="2"/><path d="M12 16h8M16 12v8" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <div class="s-num">02</div>
+      <div class="service-title">Cardiology</div>
+      <div class="service-desc">Advanced heart care with state-of-the-art diagnostic tools and interventional procedures.</div>
+      <a href="#" class="service-link">Learn more →</a>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.15s">
+      <div class="service-icon-wrap" style="background:rgba(168,85,247,0.1)">
+        <svg viewBox="0 0 32 32" fill="none"><ellipse cx="16" cy="10" rx="8" ry="6" stroke="#a855f7" stroke-width="2"/><path d="M8 10v6c0 4.4 3.6 8 8 8s8-3.6 8-8v-6" stroke="#a855f7" stroke-width="2"/><path d="M12 18l2 2 4-4" stroke="#a855f7" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <div class="s-num">03</div>
+      <div class="service-title">Neurology</div>
+      <div class="service-desc">Expert neurological care covering the full spectrum of brain and nervous system disorders.</div>
+      <a href="#" class="service-link">Learn more →</a>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.2s">
+      <div class="service-icon-wrap" style="background:rgba(34,197,94,0.1)">
+        <svg viewBox="0 0 32 32" fill="none"><rect x="6" y="6" width="20" height="24" rx="3" stroke="#22c55e" stroke-width="2"/><path d="M11 13h10M11 18h10M11 23h6" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/><circle cx="22" cy="8" r="4" fill="#22c55e" opacity="0.3"/><path d="M20 8h4M22 6v4" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="s-num">04</div>
+      <div class="service-title">Orthopedics</div>
+      <div class="service-desc">Minimally invasive joint replacement and sports medicine for faster recovery.</div>
+      <a href="#" class="service-link">Learn more →</a>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.25s">
+      <div class="service-icon-wrap" style="background:rgba(244,169,50,0.1)">
+        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="10" stroke="#f4a932" stroke-width="2"/><path d="M12 14c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4" stroke="#f4a932" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="22" r="1.5" fill="#f4a932"/></svg>
+      </div>
+      <div class="s-num">05</div>
+      <div class="service-title">Pediatrics</div>
+      <div class="service-desc">Specialized child healthcare from newborns through adolescence in a comforting environment.</div>
+      <a href="#" class="service-link">Learn more →</a>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.3s">
+      <div class="service-icon-wrap" style="background:rgba(0,180,216,0.12)">
+        <svg viewBox="0 0 32 32" fill="none"><rect x="4" y="8" width="24" height="18" rx="4" stroke="#00b4d8" stroke-width="2"/><path d="M4 14h24" stroke="#00b4d8" stroke-width="1.5"/><circle cx="10" cy="20" r="2" fill="#00b4d8"/><path d="M15 20h8" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="s-num">06</div>
+      <div class="service-title">Diagnostics & Lab</div>
+      <div class="service-desc">Same-day results with precision diagnostics across imaging, pathology, and lab testing.</div>
+      <a href="#" class="service-link">Learn more →</a>
+    </div>
+  </div>
+</section>
+
+<!-- DOCTORS -->
+<section class="section doctors-section" id="doctors">
+  <div style="text-align:center;margin-bottom:0">
+    <div class="section-label reveal">Our Specialists</div>
+    <h2 class="section-title reveal" style="text-align:center">Meet Our Expert Team</h2>
+    <p class="section-sub reveal" style="margin:0 auto;text-align:center">Internationally trained physicians dedicated to your health and recovery.</p>
+  </div>
+  <div class="doctors-grid">
+
+    <!-- Doctor 1 - Female doc (already shown above style) -->
+    <div class="doctor-card reveal">
+      <div class="doctor-visual" style="background:linear-gradient(160deg,rgba(0,180,216,0.08),rgba(0,180,216,0.02))">
+        <div class="doc-bg-circle" style="background:var(--teal)"></div>
+        <svg width="120" height="155" viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="60" cy="134" rx="38" ry="28" fill="#e8f0fe" opacity="0.9"/>
+          <rect x="24" y="86" width="72" height="58" rx="10" fill="#ffffff"/>
+          <path d="M60,102 L44,86 L24,98 Q30,124 44,136 L60,131 L76,136 Q90,124 96,98 L76,86 Z" fill="white" opacity="0.6"/>
+          <rect x="45" y="104" width="20" height="12" rx="3" fill="#00b4d8" opacity="0.9"/>
+          <text x="55" y="113" text-anchor="middle" font-size="6" fill="white" font-weight="700" font-family="DM Sans,sans-serif">MD</text>
+          <path d="M42,98 Q34,110 38,122 Q40,130 50,130 Q60,130 62,120" stroke="#00b4d8" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="62" cy="120" r="4" fill="#00b4d8"/>
+          <rect x="52" y="70" width="16" height="18" rx="7" fill="#f5c5a3"/>
+          <ellipse cx="60" cy="53" rx="25" ry="26" fill="#f5c5a3"/>
+          <!-- Short wavy hair for female -->
+          <ellipse cx="60" cy="32" rx="26" ry="10" fill="#8b5e3c"/>
+          <rect x="34" y="30" width="52" height="16" rx="4" fill="#8b5e3c"/>
+          <ellipse cx="36" cy="50" rx="5" ry="7" fill="#f5c5a3"/>
+          <ellipse cx="84" cy="50" rx="5" ry="7" fill="#f5c5a3"/>
+          <ellipse cx="50" cy="50" rx="4" ry="4.5" fill="white"/>
+          <ellipse cx="70" cy="50" rx="4" ry="4.5" fill="white"/>
+          <circle cx="51" cy="51" r="2.8" fill="#2d3748"/>
+          <circle cx="71" cy="51" r="2.8" fill="#2d3748"/>
+          <circle cx="52" cy="50" r="0.9" fill="white"/>
+          <circle cx="72" cy="50" r="0.9" fill="white"/>
+          <path d="M45,43 Q50,40 55,43" stroke="#8b5e3c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M65,43 Q70,40 75,43" stroke="#8b5e3c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M52,61 Q60,66 68,61" stroke="#d4956a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <rect x="8" y="90" width="18" height="44" rx="9" fill="white" transform="rotate(-8 17 112)"/>
+          <rect x="94" y="90" width="18" height="44" rx="9" fill="white" transform="rotate(8 103 112)"/>
+          <ellipse cx="14" cy="134" rx="10" ry="7" fill="#f5c5a3" transform="rotate(-8 14 134)"/>
+          <ellipse cx="106" cy="134" rx="10" ry="7" fill="#f5c5a3" transform="rotate(8 106 134)"/>
+          <rect x="88" y="108" width="20" height="24" rx="3" fill="#fef3c7" transform="rotate(8 98 120)"/>
+          <rect x="93" y="105" width="10" height="4" rx="2" fill="#d4b896" transform="rotate(8 98 107)"/>
+          <line x1="91" y1="115" x2="104" y2="114" stroke="#94a3b8" stroke-width="1" transform="rotate(8 97 114)"/>
+          <line x1="91" y1="120" x2="104" y2="119" stroke="#94a3b8" stroke-width="1" transform="rotate(8 97 119)"/>
+          <rect x="76" y="104" width="3" height="9" rx="1" fill="#ef4444"/>
+          <rect x="73" y="107" width="9" height="3" rx="1" fill="#ef4444"/>
+        </svg>
+      </div>
+      <div class="doctor-info">
+        <div class="doctor-name">Dr. Priya Sharma</div>
+        <div class="doctor-spec">Neurology</div>
+        <div class="doctor-rating"><span class="stars">★★★★★</span><span class="rating-txt">4.9 (312 reviews)</span></div>
+      </div>
+    </div>
+
+    <!-- Doctor 2 - Male -->
+    <div class="doctor-card reveal" style="transition-delay:0.1s">
+      <div class="doctor-visual" style="background:linear-gradient(160deg,rgba(168,85,247,0.08),rgba(168,85,247,0.02))">
+        <div class="doc-bg-circle" style="background:#a855f7"></div>
+        <svg width="120" height="155" viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="60" cy="134" rx="38" ry="28" fill="#ede9fe" opacity="0.9"/>
+          <rect x="24" y="86" width="72" height="58" rx="10" fill="#ffffff"/>
+          <path d="M60,102 L44,86 L24,98 Q30,124 44,136 L60,131 L76,136 Q90,124 96,98 L76,86 Z" fill="white" opacity="0.6"/>
+          <rect x="44" y="104" width="22" height="12" rx="3" fill="#a855f7" opacity="0.9"/>
+          <text x="55" y="113" text-anchor="middle" font-size="6" fill="white" font-weight="700" font-family="DM Sans,sans-serif">MD</text>
+          <path d="M42,98 Q34,110 38,122 Q40,130 50,130 Q60,130 62,120" stroke="#a855f7" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="62" cy="120" r="4" fill="#a855f7"/>
+          <rect x="52" y="70" width="16" height="18" rx="7" fill="#f0c8a0"/>
+          <ellipse cx="60" cy="53" rx="25" ry="26" fill="#f0c8a0"/>
+          <ellipse cx="60" cy="32" rx="25" ry="8" fill="#2d1b0e"/>
+          <rect x="35" y="30" width="50" height="15" rx="3" fill="#2d1b0e"/>
+          <ellipse cx="36" cy="50" rx="5" ry="7" fill="#f0c8a0"/>
+          <ellipse cx="84" cy="50" rx="5" ry="7" fill="#f0c8a0"/>
+          <ellipse cx="50" cy="50" rx="4" ry="4.5" fill="white"/>
+          <ellipse cx="70" cy="50" rx="4" ry="4.5" fill="white"/>
+          <circle cx="51" cy="51" r="2.8" fill="#1a1a2e"/>
+          <circle cx="71" cy="51" r="2.8" fill="#1a1a2e"/>
+          <circle cx="52" cy="50" r="0.9" fill="white"/>
+          <circle cx="72" cy="50" r="0.9" fill="white"/>
+          <path d="M45,43 Q50,40 55,43" stroke="#2d1b0e" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M65,43 Q70,40 75,43" stroke="#2d1b0e" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M52,61 Q60,67 68,61" stroke="#c4896a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <rect x="74" y="104" width="3" height="9" rx="1" fill="#ef4444"/>
+          <rect x="71" y="107" width="9" height="3" rx="1" fill="#ef4444"/>
+          <rect x="8" y="90" width="18" height="44" rx="9" fill="white" transform="rotate(-8 17 112)"/>
+          <rect x="94" y="90" width="18" height="44" rx="9" fill="white" transform="rotate(8 103 112)"/>
+          <ellipse cx="14" cy="134" rx="10" ry="7" fill="#f0c8a0" transform="rotate(-8 14 134)"/>
+          <ellipse cx="106" cy="134" rx="10" ry="7" fill="#f0c8a0" transform="rotate(8 106 134)"/>
+        </svg>
+      </div>
+      <div class="doctor-info">
+        <div class="doctor-name">Dr. Arjun Mehta</div>
+        <div class="doctor-spec">Cardiology</div>
+        <div class="doctor-rating"><span class="stars">★★★★★</span><span class="rating-txt">4.8 (289 reviews)</span></div>
+      </div>
+    </div>
+
+    <!-- Doctor 3 -->
+    <div class="doctor-card reveal" style="transition-delay:0.2s">
+      <div class="doctor-visual" style="background:linear-gradient(160deg,rgba(34,197,94,0.08),rgba(34,197,94,0.02))">
+        <div class="doc-bg-circle" style="background:#22c55e"></div>
+        <svg width="120" height="155" viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="60" cy="134" rx="38" ry="28" fill="#dcfce7" opacity="0.9"/>
+          <rect x="24" y="86" width="72" height="58" rx="10" fill="#ffffff"/>
+          <path d="M60,102 L44,86 L24,98 Q30,124 44,136 L60,131 L76,136 Q90,124 96,98 L76,86 Z" fill="white" opacity="0.6"/>
+          <rect x="44" y="104" width="22" height="12" rx="3" fill="#22c55e" opacity="0.9"/>
+          <text x="55" y="113" text-anchor="middle" font-size="6" fill="white" font-weight="700" font-family="DM Sans,sans-serif">MD</text>
+          <path d="M42,98 Q34,110 38,122 Q40,130 50,130 Q60,130 62,120" stroke="#22c55e" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="62" cy="120" r="4" fill="#22c55e"/>
+          <rect x="52" y="70" width="16" height="18" rx="7" fill="#d4a574"/>
+          <ellipse cx="60" cy="53" rx="25" ry="26" fill="#d4a574"/>
+          <!-- Curly hair representation -->
+          <ellipse cx="60" cy="30" rx="27" ry="10" fill="#1a0a00"/>
+          <rect x="33" y="28" width="54" height="18" rx="6" fill="#1a0a00"/>
+          <circle cx="38" cy="40" r="6" fill="#1a0a00"/>
+          <circle cx="82" cy="40" r="6" fill="#1a0a00"/>
+          <ellipse cx="36" cy="50" rx="5" ry="7" fill="#d4a574"/>
+          <ellipse cx="84" cy="50" rx="5" ry="7" fill="#d4a574"/>
+          <ellipse cx="50" cy="50" rx="4" ry="4.5" fill="white"/>
+          <ellipse cx="70" cy="50" rx="4" ry="4.5" fill="white"/>
+          <circle cx="51" cy="51" r="2.8" fill="#1a0a00"/>
+          <circle cx="71" cy="51" r="2.8" fill="#1a0a00"/>
+          <circle cx="52" cy="50" r="0.9" fill="white"/>
+          <circle cx="72" cy="50" r="0.9" fill="white"/>
+          <path d="M45,43 Q50,40 55,43" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M65,43 Q70,40 75,43" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M52,62 Q60,68 68,62" stroke="#b07845" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <rect x="74" y="104" width="3" height="9" rx="1" fill="#ef4444"/>
+          <rect x="71" y="107" width="9" height="3" rx="1" fill="#ef4444"/>
+          <rect x="8" y="90" width="18" height="44" rx="9" fill="white" transform="rotate(-8 17 112)"/>
+          <rect x="94" y="90" width="18" height="44" rx="9" fill="white" transform="rotate(8 103 112)"/>
+          <ellipse cx="14" cy="134" rx="10" ry="7" fill="#d4a574" transform="rotate(-8 14 134)"/>
+          <ellipse cx="106" cy="134" rx="10" ry="7" fill="#d4a574" transform="rotate(8 106 134)"/>
+        </svg>
+      </div>
+      <div class="doctor-info">
+        <div class="doctor-name">Dr. James Okafor</div>
+        <div class="doctor-spec">Orthopedics</div>
+        <div class="doctor-rating"><span class="stars">★★★★★</span><span class="rating-txt">4.9 (198 reviews)</span></div>
+      </div>
+    </div>
+
+    <!-- Doctor 4 -->
+    <div class="doctor-card reveal" style="transition-delay:0.3s">
+      <div class="doctor-visual" style="background:linear-gradient(160deg,rgba(244,169,50,0.08),rgba(244,169,50,0.02))">
+        <div class="doc-bg-circle" style="background:var(--gold)"></div>
+        <svg width="120" height="155" viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="60" cy="134" rx="38" ry="28" fill="#fef9ee" opacity="0.9"/>
+          <rect x="24" y="86" width="72" height="58" rx="10" fill="#ffffff"/>
+          <path d="M60,102 L44,86 L24,98 Q30,124 44,136 L60,131 L76,136 Q90,124 96,98 L76,86 Z" fill="white" opacity="0.6"/>
+          <rect x="44" y="104" width="22" height="12" rx="3" fill="#f4a932" opacity="0.9"/>
+          <text x="55" y="113" text-anchor="middle" font-size="6" fill="white" font-weight="700" font-family="DM Sans,sans-serif">MD</text>
+          <path d="M42,98 Q34,110 38,122 Q40,130 50,130 Q60,130 62,120" stroke="#f4a932" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="62" cy="120" r="4" fill="#f4a932"/>
+          <rect x="52" y="70" width="16" height="18" rx="7" fill="#fde8c8"/>
+          <ellipse cx="60" cy="53" rx="25" ry="26" fill="#fde8c8"/>
+          <ellipse cx="60" cy="32" rx="25" ry="8" fill="#c4944a"/>
+          <rect x="35" y="30" width="50" height="15" rx="3" fill="#c4944a"/>
+          <ellipse cx="36" cy="50" rx="5" ry="7" fill="#fde8c8"/>
+          <ellipse cx="84" cy="50" rx="5" ry="7" fill="#fde8c8"/>
+          <ellipse cx="50" cy="50" rx="4" ry="4.5" fill="white"/>
+          <ellipse cx="70" cy="50" rx="4" ry="4.5" fill="white"/>
+          <circle cx="51" cy="51" r="2.8" fill="#3d2c1e"/>
+          <circle cx="71" cy="51" r="2.8" fill="#3d2c1e"/>
+          <circle cx="52" cy="50" r="0.9" fill="white"/>
+          <circle cx="72" cy="50" r="0.9" fill="white"/>
+          <path d="M45,43 Q50,40 55,43" stroke="#c4944a" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M65,43 Q70,40 75,43" stroke="#c4944a" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M52,61 Q60,67 68,61" stroke="#d4956a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <!-- Glasses -->
+          <rect x="44" y="48" width="12" height="8" rx="3" stroke="#4a4a4a" stroke-width="1.5" fill="rgba(255,255,255,0.2)"/>
+          <rect x="64" y="48" width="12" height="8" rx="3" stroke="#4a4a4a" stroke-width="1.5" fill="rgba(255,255,255,0.2)"/>
+          <line x1="56" y1="52" x2="64" y2="52" stroke="#4a4a4a" stroke-width="1.2"/>
+          <line x1="36" y1="52" x2="44" y2="52" stroke="#4a4a4a" stroke-width="1.2"/>
+          <line x1="76" y1="52" x2="84" y2="52" stroke="#4a4a4a" stroke-width="1.2"/>
+          <rect x="74" y="104" width="3" height="9" rx="1" fill="#ef4444"/>
+          <rect x="71" y="107" width="9" height="3" rx="1" fill="#ef4444"/>
+          <rect x="8" y="90" width="18" height="44" rx="9" fill="white" transform="rotate(-8 17 112)"/>
+          <rect x="94" y="90" width="18" height="44" rx="9" fill="white" transform="rotate(8 103 112)"/>
+          <ellipse cx="14" cy="134" rx="10" ry="7" fill="#fde8c8" transform="rotate(-8 14 134)"/>
+          <ellipse cx="106" cy="134" rx="10" ry="7" fill="#fde8c8" transform="rotate(8 106 134)"/>
+        </svg>
+      </div>
+      <div class="doctor-info">
+        <div class="doctor-name">Dr. Liu Wei</div>
+        <div class="doctor-spec">Pediatrics</div>
+        <div class="doctor-rating"><span class="stars">★★★★★</span><span class="rating-txt">5.0 (441 reviews)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="about">
+  <div style="text-align:center">
+    <div class="section-label reveal">Your Journey</div>
+    <h2 class="section-title reveal" style="text-align:center">Book in 4 Simple Steps</h2>
+  </div>
+  <div class="steps-row">
+    <div class="step-item reveal" style="transition-delay:0.05s">
+      <div class="step-circle"><span style="font-size:26px">🔍</span><div class="step-num">1</div></div>
+      <div class="step-title">Find a Specialist</div>
+      <div class="step-desc">Browse through our extensive list of expert doctors by specialty or availability.</div>
+    </div>
+    <div class="step-item reveal" style="transition-delay:0.12s">
+      <div class="step-circle"><span style="font-size:26px">📅</span><div class="step-num">2</div></div>
+      <div class="step-title">Choose a Slot</div>
+      <div class="step-desc">Pick your preferred date and time from real-time availability calendar.</div>
+    </div>
+    <div class="step-item reveal" style="transition-delay:0.19s">
+      <div class="step-circle"><span style="font-size:26px">✅</span><div class="step-num">3</div></div>
+      <div class="step-title">Confirm Booking</div>
+      <div class="step-desc">Receive instant confirmation with all your appointment details via SMS & email.</div>
+    </div>
+    <div class="step-item reveal" style="transition-delay:0.26s">
+      <div class="step-circle"><span style="font-size:26px">💊</span><div class="step-num">4</div></div>
+      <div class="step-title">Get Treated</div>
+      <div class="step-desc">Visit in-person or join a video consultation from the comfort of your home.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section testimonials">
+  <div class="section-label reveal">Patient Stories</div>
+  <h2 class="section-title reveal">What Our Patients Say</h2>
+  <div class="testimonial-grid">
+    <div class="testimonial-card reveal">
+      <div class="t-quote">"</div>
+      <div class="t-text">The care I received here was truly exceptional. Dr. Priya took time to explain everything thoroughly and the team made me feel at ease throughout my treatment.</div>
+      <div class="t-stars">★★★★★</div>
+      <div class="t-author">
+        <div class="t-avatar" style="background:rgba(0,180,216,0.15);color:var(--teal)">RK</div>
+        <div>
+          <div class="t-name">Ramesh Kumar</div>
+          <div class="t-detail">Cardiac patient · Chennai</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal" style="transition-delay:0.1s">
+      <div class="t-quote">"</div>
+      <div class="t-text">Booking was seamless, the doctors are world-class, and the facilities are spotless. MediCare+ set a new benchmark for what healthcare should feel like.</div>
+      <div class="t-stars">★★★★★</div>
+      <div class="t-author">
+        <div class="t-avatar" style="background:rgba(168,85,247,0.15);color:#a855f7">AM</div>
+        <div>
+          <div class="t-name">Anjali Menon</div>
+          <div class="t-detail">Orthopedic patient · Coimbatore</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal" style="transition-delay:0.2s">
+      <div class="t-quote">"</div>
+      <div class="t-text">My daughter received outstanding pediatric care. The doctors and nurses were incredibly gentle and patient. We couldn't be more grateful for the compassionate service.</div>
+      <div class="t-stars">★★★★★</div>
+      <div class="t-author">
+        <div class="t-avatar" style="background:rgba(34,197,94,0.15);color:#22c55e">SN</div>
+        <div>
+          <div class="t-name">Suresh Narayanan</div>
+          <div class="t-detail">Parent of patient · Madurai</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal" style="transition-delay:0.3s">
+      <div class="t-quote">"</div>
+      <div class="t-text">The telemedicine feature saved me hours of travel. Consulting with Dr. Wei from home was just as thorough and professional as an in-person visit.</div>
+      <div class="t-stars">★★★★★</div>
+      <div class="t-author">
+        <div class="t-avatar" style="background:rgba(244,169,50,0.15);color:#f4a932">LP</div>
+        <div>
+          <div class="t-name">Lakshmi Pillai</div>
+          <div class="t-detail">Telemedicine patient · Trichy</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-blob"></div>
+  <div class="cta-box">
+    <div class="section-label reveal" style="text-align:center">Your Health Matters</div>
+    <h2 class="cta-title reveal">Ready to Experience <em>World-Class</em> Care?</h2>
+    <p class="cta-sub reveal">Join over 50,000 patients who trust MediCare+ for their health journey. Book your consultation today.</p>
+    <div class="cta-actions reveal">
+      <button onclick="window.location.href='/login/'" class="btn-primary">Login to Book →</button>
+      <button class="btn-ghost">Call Us: +91 98765 43210</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">MediCare<span style="color:var(--teal)">+</span></div>
+    <div class="footer-desc">World-class healthcare delivered with compassion and cutting-edge technology. Your health is our mission.</div>
+    <div style="margin-top:20px;display:flex;gap:12px">
+      <div style="width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all 0.3s" onmouseenter="this.style.borderColor='rgba(0,180,216,0.4)'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.12)'">𝕏</div>
+      <div style="width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all 0.3s" onmouseenter="this.style.borderColor='rgba(0,180,216,0.4)'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.12)'">in</div>
+      <div style="width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all 0.3s" onmouseenter="this.style.borderColor='rgba(0,180,216,0.4)'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.12)'">📘</div>
+    </div>
+  </div>
+  <div class="footer-col">
+    <h4>Services</h4>
+    <ul>
+      <li><a href="#">General Medicine</a></li>
+      <li><a href="#">Cardiology</a></li>
+      <li><a href="#">Neurology</a></li>
+      <li><a href="#">Orthopedics</a></li>
+      <li><a href="#">Pediatrics</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Quick Links</h4>
+    <ul>
+      <li><a href="/login/">Book Appointment</a></li>
+      <li><a href="#">Our Doctors</a></li>
+      <li><a href="#services">Departments</a></li>
+      <li><a href="/login/">Patient Portal</a></li>
+      <li><a href="#">Telemedicine</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="#">📍 42 Health Park, Madurai</a></li>
+      <li><a href="#">📞 +91 98765 43210</a></li>
+      <li><a href="#">✉️ care@medicare.in</a></li>
+      <li><a href="#">⏰ 24/7 Emergency</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const dot = document.getElementById('cursorDot');
+let mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=(mx-2)+'px';dot.style.top=(my-2)+'px'});
+function animCursor(){cx+=(mx-cx)*0.12;cy+=(my-cy)*0.12;cursor.style.left=(cx-7)+'px';cursor.style.top=(cy-7)+'px';requestAnimationFrame(animCursor)}
+animCursor();
+document.querySelectorAll('button,a,.service-card,.doctor-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2)';cursor.style.opacity='0.5'});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';cursor.style.opacity='1'});
+});
+
+// Particles
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+let W,H,pts=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+class Pt{constructor(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*0.3;this.vy=(Math.random()-.5)*0.3;this.r=Math.random()*2+0.5;this.a=Math.random()}
+update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W)this.vx*=-1;if(this.y<0||this.y>H)this.vy*=-1}
+draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(0,180,216,${this.a*0.4})`;ctx.fill()}}
+for(let i=0;i<80;i++)pts.push(new Pt());
+function drawPts(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.update();p.draw()});
+pts.forEach((a,i)=>{pts.slice(i+1).forEach(b=>{const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<120){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(0,180,216,${0.12*(1-d/120)})`;ctx.lineWidth=0.5;ctx.stroke()}})});
+requestAnimationFrame(drawPts)}
+drawPts();
+
+// Counter animation
+function animateCounter(el){
+  const target=parseInt(el.dataset.target);
+  let current=0;const step=target/60;
+  const interval=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(interval)}
+  const span=el.querySelector('span');el.textContent=Math.floor(current);if(span)el.appendChild(span)},20);
+}
+const counterEls=document.querySelectorAll('[data-target]');
+const counterObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){animateCounter(e.target);counterObserver.unobserve(e.target)}})});
+counterEls.forEach(el=>counterObserver.observe(el));
+
+// Scroll reveal
+const reveals=document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
+const revealObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible')}})},{threshold:0.12});
+reveals.forEach(el=>revealObserver.observe(el));
+
+// 3D tilt on hero card
+const card=document.getElementById('heroCard');
+if(card){card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5;const y=(e.clientY-r.top)/r.height-.5;card.style.transform=`perspective(800px) rotateX(${-y*12}deg) rotateY(${x*12}deg) translateY(-4px)`});
+card.addEventListener('mouseleave',()=>{card.style.transform='';card.style.transition='transform 0.6s ease'})}
+
+// Navbar scroll
+window.addEventListener('scroll',()=>{const nav=document.querySelector('nav');if(window.scrollY>50){nav.style.background='rgba(10,22,40,0.95)'}else{nav.style.background='rgba(10,22,40,0.8)'}});
+</script>
+</body>
+</html>

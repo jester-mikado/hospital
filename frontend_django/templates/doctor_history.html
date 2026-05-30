@@ -2,30 +2,28 @@
 
 {% block content %}
 
-<div class="hero">
-    <h1>Doctor History</h1>
-    <p>Completed and denied appointment records.</p>
-</div>
+<div class="page-shell">
+    <section class="hero fade-up">
+        <div class="eyebrow">Doctor Records</div>
+        <h1>Doctor <span>History</span></h1>
+        <p>Completed and denied appointment records.</p>
+    </section>
 
-<div class="container">
-    <div class="card-grid">
-
+    <div class="timeline fade-up">
         {% for appointment in history %}
-
-            <div class="card">
-                <span class="badge">{{ appointment.specialist }}</span>
-                <h2>{{ appointment.patient_name }}</h2>
-                <p>Age: {{ appointment.patient_age }}</p>
-                <p>Reason: {{ appointment.reason }}</p>
-                <p class="status">Status: {{ appointment.status }}</p>
+            <div class="timeline-item">
+                <div class="timeline-dot">✓</div>
+                <div class="card">
+                    <span class="badge">{{ appointment.specialist }}</span>
+                    <h2 style="margin:12px 0">{{ appointment.patient_name }}</h2>
+                    <p>Age: {{ appointment.patient_age }}</p>
+                    <p>Reason: {{ appointment.reason }}</p>
+                    <p class="status">Status: {{ appointment.status }}</p>
+                </div>
             </div>
-
         {% empty %}
-
-            <p>No history yet.</p>
-
+            <p class="empty">No history yet.</p>
         {% endfor %}
-
     </div>
 </div>
 

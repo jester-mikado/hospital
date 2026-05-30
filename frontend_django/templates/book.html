@@ -2,15 +2,14 @@
 
 {% block content %}
 
-<div class="hero">
-    <h1>Book Appointment</h1>
-    <p>Confirm your details and submit booking request.</p>
-</div>
+<div class="page-shell">
+    <section class="hero center fade-up">
+        <div class="eyebrow">Appointment Request</div>
+        <h1>Book <span>Appointment</span></h1>
+        <p>Confirm your details and submit your request to the doctor.</p>
+    </section>
 
-<div class="container">
-
-    <form method="POST" class="card">
-
+    <form method="POST" class="panel fade-up" style="max-width:680px;margin:auto">
         {% csrf_token %}
 
         <label>Specialist</label>
@@ -28,12 +27,8 @@
         <label>Reason</label>
         <textarea name="reason" placeholder="Reason for appointment" required></textarea>
 
-        <button class="btn" type="submit">
-            Confirm Booking
-        </button>
-
+        <button class="btn full" type="submit">Confirm Booking →</button>
     </form>
-
 </div>
 
 {% endblock %}

@@ -2,87 +2,117 @@
 
 {% block content %}
 
-<div class="hero">
-    <h1>Admin Dashboard</h1>
-    <p>Manage users, appointments, and slots.</p>
-</div>
+<div class="page-shell">
+    <section class="hero fade-up">
+        <div class="eyebrow">Admin Control</div>
+        <h1>Command <span>Center</span></h1>
+        <p>Manage users, appointments, slots, and system activity.</p>
+    </section>
 
-<div class="container">
+    <div class="stat-grid fade-up">
+        <div class="stat-card">
+            <div class="num">{{ users|length }}</div>
+            <p>Total Users</p>
+        </div>
+        <div class="stat-card">
+            <div class="num">{{ appointments|length }}</div>
+            <p>Appointments</p>
+        </div>
+        <div class="stat-card">
+            <div class="num">{{ slots|length }}</div>
+            <p>Slots</p>
+        </div>
+    </div>
 
-    <h2>Users</h2>
-
-    <div class="card-grid">
-
+    <div class="section-head fade-up">
+        <h2>Users</h2>
+    </div>
+    <div class="grid fade-up">
         {% for user in users %}
-
-            <div class="card">
-                <h2>{{ user.username }}</h2>
-                <p class="status">Role: {{ user.role }}</p>
-                <p>User ID: {{ user.id }}</p>
-            </div>
-
+        <div class="card">
+            <h2>{{ user.username }}</h2>
+            <p class="status">Role: {{ user.role }}</p>
+            <p>User ID: {{ user.id }}</p>
+        </div>
         {% endfor %}
-
     </div>
 
     <br><br>
 
-    <h2>Appointments</h2>
-
-    <div class="card-grid">
-
+    <div class="section-head fade-up">
+        <h2>Appointments</h2>
+    </div>
+    <div class="grid fade-up">
         {% for appointment in appointments %}
-
-            <div class="card">
-                <span class="badge">{{ appointment.specialist }}</span>
-
-                <h2>{{ appointment.patient_name }}</h2>
-
-                <p>Reason: {{ appointment.reason }}</p>
-                <p>Status: {{ appointment.status }}</p>
-
-                <a class="btn danger" href="/admin/delete-appointment/{{ appointment.id }}/">
-                    Delete Appointment
-                </a>
-            </div>
-
+        <div class="card">
+            <span class="badge">{{ appointment.specialist }}</span>
+            <h2 style="margin:14px 0">{{ appointment.patient_name }}</h2>
+            <p>Reason: {{ appointment.reason }}</p>
+            <p>Status: {{ appointment.status }}</p>
+            <br>
+            <a class="btn danger full" href="/admin/delete-appointment/{{ appointment.id }}/">Delete Appointment</a>
+        </div>
         {% empty %}
-
-            <p>No appointments available.</p>
-
+        <p class="empty">No appointments available.</p>
         {% endfor %}
-
     </div>
 
     <br><br>
 
-    <h2>Slots</h2>
-
-    <div class="card-grid">
-
+    <div class="section-head fade-up">
+        <h2>Slots</h2>
+    </div>
+    <div class="grid fade-up">
         {% for slot in slots %}
+        <div class="card">
+            <span class="badge gold">{{ slot.specialist }}</span>
+            <h2 style="margin:14px 0">{{ slot.time }}</h2>
+            <p>Status: {{ slot.status }}</p>
+            <p>Doctor ID: {{ slot.doctor_id }}</p>
+            <br>
+            <a class="btn danger full" href="/admin/delete-slot/{{ slot.id }}/">Delete Slot</a>
+        </div>
+        {% empty %}
+        <p class="empty">No slots available.</p>
+        {% endfor %}
+    </div>
+    <br><br>
 
-            <div class="card">
-                <span class="badge">{{ slot.specialist }}</span>
+    <div class="section-head fade-up">
+        <h2>Reviews</h2>
+    </div>
 
-                <h2>{{ slot.time }}</h2>
+    <div class="grid fade-up">
 
-                <p>Status: {{ slot.status }}</p>
-                <p>Doctor ID: {{ slot.doctor_id }}</p>
+        {% for review in reviews %}
 
-                <a class="btn danger" href="/admin/delete-slot/{{ slot.id }}/">
-                    Delete Slot
-                </a>
-            </div>
+        <div class="card">
+            <span class="badge">{{ review.specialist }}</span>
+
+            <h2 style="margin:14px 0">
+                Dr. {{ review.doctor_name }}
+            </h2>
+
+            <p>Patient: {{ review.patient_name }}</p>
+
+            <p>Rating: {{ review.rating }} ⭐</p>
+
+            <p>Review: {{ review.review_text }}</p>
+
+            <br>
+
+            <a class="btn danger full" href="/admin/delete-review/{{ review.id }}/">
+                Delete Review
+            </a>
+        </div>
 
         {% empty %}
 
-            <p>No slots available.</p>
+        <p class="empty">No reviews yet.</p>
 
         {% endfor %}
 
     </div>
-
 </div>
 
 {% endblock %}

@@ -56,3 +56,19 @@ class Appointment(Base):
 
     status = Column(String, default="pending")
     # pending / accepted / denied / completed
+
+class Review(Base):
+    __tablename__ = "reviews"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    appointment_id = Column(Integer, ForeignKey("appointments.id"))
+    patient_id = Column(Integer, ForeignKey("patients.id"))
+    doctor_id = Column(Integer, ForeignKey("doctors.id"))
+
+    patient_name = Column(String)
+    doctor_name = Column(String)
+    specialist = Column(String)
+
+    rating = Column(Integer)
+    review_text = Column(String)

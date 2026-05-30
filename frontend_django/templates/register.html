@@ -2,21 +2,51 @@
 
 {% block content %}
 
-<div class="hero">
-    <h1>Create Account</h1>
-    <p>Register as a patient and start booking appointments.</p>
-</div>
+<div class="form-card fade-up">
+    <div class="form-art">
+        <svg class="docsvg" viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="75" r="58" fill="rgba(0,198,212,0.08)" />
+    <rect x="22" y="84" width="76" height="62" rx="10" fill="#fff" />
+    <path d="M60,100 L42,84 L22,96 Q28,124 44,138 L60,132 L76,138 Q92,124 98,96 L78,84 Z" fill="white" opacity="0.55" />
+    <rect x="44" y="102" width="22" height="13" rx="3" fill="#00c6d4" opacity="0.9" />
+    <text x="55" y="112" text-anchor="middle" font-size="6" fill="white" font-weight="700">MD</text>
+    <rect x="76" y="102" width="3" height="9" rx="1.5" fill="#ef4444" />
+    <rect x="73" y="105" width="9" height="3" rx="1.5" fill="#ef4444" />
+    <path d="M40,96 Q32,110 36,122 Q38,131 49,131 Q60,131 62,119" stroke="#00c6d4" stroke-width="2.5" fill="none" stroke-linecap="round" />
+    <circle cx="62" cy="119" r="5" fill="#00c6d4" />
+    <rect x="52" y="68" width="16" height="20" rx="7" fill="#f5c5a3" />
+    <ellipse cx="60" cy="52" rx="27" ry="28" fill="#f5c5a3" />
+    <ellipse cx="60" cy="28" rx="27" ry="9" fill="#3d2c1e" />
+    <rect x="33" y="26" width="54" height="16" rx="3" fill="#3d2c1e" />
+    <ellipse cx="33" cy="52" rx="5.5" ry="7" fill="#f5c5a3" />
+    <ellipse cx="87" cy="52" rx="5.5" ry="7" fill="#f5c5a3" />
+    <ellipse cx="49" cy="50" rx="4.5" ry="5" fill="white" />
+    <ellipse cx="71" cy="50" rx="4.5" ry="5" fill="white" />
+    <circle cx="50" cy="51" r="3" fill="#1a2a3a" />
+    <circle cx="72" cy="51" r="3" fill="#1a2a3a" />
+    <circle cx="51" cy="49.5" r="1" fill="white" />
+    <circle cx="73" cy="49.5" r="1" fill="white" />
+    <path d="M44,42 Q49,39 54,42" stroke="#3d2c1e" stroke-width="1.8" fill="none" stroke-linecap="round" />
+    <path d="M66,42 Q71,39 76,42" stroke="#3d2c1e" stroke-width="1.8" fill="none" stroke-linecap="round" />
+    <path d="M51,63 Q60,70 69,63" stroke="#d4956a" stroke-width="2" fill="none" stroke-linecap="round" />
+    <rect x="6" y="92" width="20" height="46" rx="10" fill="white" transform="rotate(-10 16 115)" />
+    <rect x="94" y="92" width="20" height="46" rx="10" fill="white" transform="rotate(10 104 115)" />
+    <ellipse cx="12" cy="138" rx="11" ry="8" fill="#f5c5a3" transform="rotate(-10 12 138)" />
+    <ellipse cx="108" cy="138" rx="11" ry="8" fill="#f5c5a3" transform="rotate(10 108 138)" />
+</svg>
+        <h2>Create Account</h2>
+        <p>Register as a patient and start your appointment journey.</p>
+    </div>
 
-<div class="container">
-
-    <form method="POST" class="form-card">
-
+    <form method="POST" class="form-box">
         {% csrf_token %}
 
+        <div class="eyebrow">Patient Registration</div>
+        <h1>Join Clinic+</h1>
+        <p style="color:var(--muted);margin-bottom:28px">Create your account</p>
+
         {% if error %}
-            <p style="color:red;">
-                {{ error }}
-            </p>
+            <p style="color:#f87171;font-weight:800;margin-bottom:16px">{{ error }}</p>
         {% endif %}
 
         <label>Username</label>
@@ -31,19 +61,13 @@
         <label>Age</label>
         <input type="number" name="age" placeholder="Enter age" required>
 
-        <button class="btn" type="submit">
-            Register
-        </button>
+        <button class="btn full" type="submit">Register →</button>
 
-        <br><br>
-
-        <p>
+        <p style="text-align:center;margin-top:24px;color:var(--muted)">
             Already have an account?
-            <a href="/">Login</a>
+            <a href="/login/" style="color:var(--teal);font-weight:800">Login</a>
         </p>
-
     </form>
-
 </div>
 
 {% endblock %}

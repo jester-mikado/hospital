@@ -2,63 +2,47 @@
 
 {% block content %}
 
-<div class="hero">
-    <h1>Doctor Dashboard</h1>
-    <p>Manage patient appointment requests.</p>
+<div class="page-shell">
+    <section class="hero fade-up">
+        <div class="eyebrow">Doctor Workspace</div>
+        <h1>Doctor <span>Dashboard</span></h1>
+        <p>Review active appointment requests and manage patient consultations.</p>
+    </section>
 
-    <br>
+    <div class="section-head fade-up">
+        <h2>Current Appointments</h2>
+        <a class="btn" href="/add-slot/">Add Slot →</a>
+    </div>
 
-    <a class="btn" href="/add-slot/">Add Slot</a>
-</div>
-
-<div class="container">
-
-    <form method="GET">
+    <form method="GET" class="filter-form fade-up">
         <select name="status">
             <option value="All">All Current Appointments</option>
             <option value="pending">Pending</option>
             <option value="accepted">Accepted</option>
         </select>
-
         <button class="btn" type="submit">Filter</button>
     </form>
 
-    <div class="card-grid">
-
+    <div class="grid fade-up">
         {% for appointment in appointments %}
+            <div class="card">
+                <span class="badge">{{ appointment.specialist }}</span>
+                <h2 style="margin:14px 0 8px">{{ appointment.patient_name }}</h2>
+                <p>Age: {{ appointment.patient_age }}</p>
+                <p>Reason: {{ appointment.reason }}</p>
+                <p class="status">Status: {{ appointment.status }}</p>
 
-        <div class="card">
-            <span class="badge">{{ appointment.specialist }}</span>
-
-            <h2>{{ appointment.patient_name }}</h2>
-
-            <p>Age: {{ appointment.patient_age }}</p>
-            <p>Reason: {{ appointment.reason }}</p>
-            <p class="status">Status: {{ appointment.status }}</p>
-
-            {% if appointment.status == "pending" %}
-
-            <a class="btn success" href="/accept/{{ appointment.id }}/">
-                Accept
-            </a>
-
-            <br><br>
-
-            <a class="btn danger" href="/reject/{{ appointment.id }}/">
-                Reject
-            </a>
-
-            {% endif %}
-        </div>
-
+                {% if appointment.status == "pending" %}
+                    <br>
+                    <a class="btn success full" href="/accept/{{ appointment.id }}/">Accept</a>
+                    <br><br>
+                    <a class="btn danger full" href="/reject/{{ appointment.id }}/">Reject</a>
+                {% endif %}
+            </div>
         {% empty %}
-
-        <p>No appointments found.</p>
-
+            <p class="empty">No current appointments.</p>
         {% endfor %}
-
     </div>
-
 </div>
 
 {% endblock %}
