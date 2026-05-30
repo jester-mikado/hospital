@@ -485,3 +485,73 @@ def delete_review(
     db.commit()
 
     return {"message": "Review deleted successfully"}
+
+@app.get("/admin/dashboard-data")
+def admin_dashboard_data(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(admin_required)
+):
+
+    users = db.query(models.User).all()
+    appointments = db.query(models.Appointment).all()
+    slots = db.query(models.Slot).all()
+    reviews = db.query(models.Review).all()
+
+    return {
+        "users": users,
+        "appointments": appointments,
+        "slots": slots,
+        "reviews": reviews
+    }
+
+@app.get("/patient/dashboard-data/{user_id}")
+def patient_dashboard_data(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+
+    patient = db.query(models.Patient).filter(
+        models.Patient.user_id == user_id
+    ).first()
+
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    doctors = db.query(models.Doctor).all()
+
+    appointments = db.query(models.Appointment).filter(
+        models.Appointment.patient_id == patient.id
+    ).all()
+
+    return {
+        "patient": patient,
+        "doctors": doctors,
+        "appointments": appointments
+    }
+
+@app.get("/doctor/dashboard-data/{user_id}")
+def doctor_dashboard_data(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+
+    doctor = db.query(models.Doctor).filter(
+        models.Doctor.user_id == user_id
+    ).first()
+
+    if not doctor:
+        raise HTTPException(status_code=404, detail="Doctor not found")
+
+    appointments = db.query(models.Appointment).filter(
+        models.Appointment.doctor_id == doctor.id
+    ).all()
+
+    slots = db.query(models.Slot).filter(
+        models.Slot.doctor_id == doctor.id
+    ).all()
+
+    return {
+        "doctor": doctor,
+        "appointments": appointments,
+        "slots": slots
+    }

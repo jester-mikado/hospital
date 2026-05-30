@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import requests
+from django.core.cache import cache
 
 API_URL = "https://hospital-management-p1pj.onrender.com"
 
@@ -11,12 +12,24 @@ def check_role(request, allowed_role):
 
     return True
 
-# LOGIN
 
 def landing_page(request):
 
-    doctors = requests.get(f"{API_URL}/doctors").json()
-    reviews = requests.get(f"{API_URL}/reviews").json()
+    doctors = cache.get("landing_doctors")
+    reviews = cache.get("landing_reviews")
+
+    try:
+        if doctors is None:
+            doctors = api_get(f"{API_URL}/doctors")
+            cache.set("landing_doctors", doctors, 300)
+
+        if reviews is None:
+            reviews = api_get(f"{API_URL}/reviews")
+            cache.set("landing_reviews", reviews, 300)
+
+    except requests.exceptions.RequestException:
+        doctors = doctors or []
+        reviews = reviews or []
 
     return render(request, "landing.html", {
         "doctors": doctors,
@@ -106,9 +119,16 @@ def patient_dashboard(request):
     if not check_role(request, "patient"):
         return redirect("login")
 
-    selected_specialist = request.GET.get("specialist")
+    user_id = request.session.get("user_id")
 
-    doctors = requests.get(f"{API_URL}/doctors").json()
+    data = api_get(
+        f"{API_URL}/patient/dashboard-data/{user_id}"
+    )
+
+    doctors = data["doctors"]
+    appointments = data["appointments"]
+
+    selected_specialist = request.GET.get("specialist")
 
     if selected_specialist and selected_specialist != "All":
         doctors = [
@@ -117,7 +137,8 @@ def patient_dashboard(request):
         ]
 
     return render(request, "patient_dashboard.html", {
-        "doctors": doctors
+        "doctors": doctors,
+        "appointments": appointments
     })
 
 def doctor_dashboard(request):
@@ -127,17 +148,13 @@ def doctor_dashboard(request):
 
     user_id = request.session.get("user_id")
 
-    doctor = requests.get(
-        f"{API_URL}/doctor/by-user/{user_id}"
-    ).json()
+    data = api_get(
+        f"{API_URL}/doctor/dashboard-data/{user_id}"
+    )
 
-    doctor_id = doctor["id"]
+    doctor = data["doctor"]
+    appointments = data["appointments"]
 
-    appointments = requests.get(
-        f"{API_URL}/doctor/appointments/{doctor_id}"
-    ).json()
-
-    # show only current appointments
     appointments = [
         appointment for appointment in appointments
         if appointment["status"] in ["pending", "accepted"]
@@ -153,7 +170,7 @@ def doctor_dashboard(request):
 
     return render(request, "doctor_dashboard.html", {
         "appointments": appointments,
-        "doctor_id": doctor_id
+        "doctor_id": doctor["id"]
     })
     
 def accept_appointment(request, appointment_id):
@@ -191,9 +208,12 @@ def add_slot(request):
 
     user_id = request.session.get("user_id")
 
-    doctor = requests.get(
-        f"{API_URL}/doctor/by-user/{user_id}"
-    ).json()
+    data = api_get(
+        f"{API_URL}/doctor/dashboard-data/{user_id}"
+    )
+
+    doctor = data["doctor"]
+    slots = data["slots"]
 
     doctor_id = doctor["id"]
     specialist = doctor["specialist"]
@@ -202,9 +222,9 @@ def add_slot(request):
 
         time = request.POST.get("time")
 
-        response = requests.post(
+        response = api_post(
             f"{API_URL}/slots",
-            json={
+            {
                 "doctor_id": doctor_id,
                 "time": time,
                 "specialist": specialist
@@ -212,10 +232,6 @@ def add_slot(request):
         )
 
         if response.status_code != 200:
-            slots = requests.get(
-                f"{API_URL}/slots/{doctor_id}"
-            ).json()
-
             return render(request, "add_slot.html", {
                 "specialist": specialist,
                 "slots": slots,
@@ -223,10 +239,6 @@ def add_slot(request):
             })
 
         return redirect("doctor_dashboard")
-
-    slots = requests.get(
-        f"{API_URL}/slots/{doctor_id}"
-    ).json()
 
     return render(request, "add_slot.html", {
         "specialist": specialist,
@@ -238,20 +250,25 @@ def admin_dashboard(request):
     if not check_role(request, "admin"):
         return redirect("login")
 
-    users = requests.get(f"{API_URL}/admin/users").json()
-    appointments = requests.get(f"{API_URL}/admin/appointments").json()
-    slots = requests.get(f"{API_URL}/admin/slots").json()
-    reviews = requests.get(
-        f"{API_URL}/reviews"
-    ).json()
+    token = request.session.get("token")
+
+    response = requests.get(
+        f"{API_URL}/admin/dashboard-data",
+        headers={
+            "Authorization": f"Bearer {token}"
+        },
+        timeout=8
+    )
+
+    data = response.json()
 
     return render(request, "admin_dashboard.html", {
-        "users": users,
-        "appointments": appointments,
-        "slots": slots,
-        "reviews": reviews
+        "users": data["users"],
+        "appointments": data["appointments"],
+        "slots": data["slots"],
+        "reviews": data["reviews"]
     })
-    
+
 def doctor_slots(request, doctor_id):
 
     selected_specialist = request.GET.get("specialist")
@@ -370,6 +387,7 @@ def delete_appointment(request, appointment_id):
 
     print("DELETE STATUS:", response.status_code)
     print("DELETE RESPONSE:", response.text)
+    cache.delete("landing_doctors")
 
     return redirect("admin_dashboard") 
 
@@ -414,6 +432,7 @@ def delete_slot(request, slot_id):
             "Authorization": f"Bearer {token}"
         }
     )
+    cache.delete("landing_doctors")
 
     return redirect("admin_dashboard")
 
@@ -517,6 +536,8 @@ def review_page(request, appointment_id):
                 "review_text": review_text
             }
         )
+        if response.status_code == 200:
+            cache.delete("landing_reviews")
 
         return redirect("patient_history")
 
@@ -538,5 +559,21 @@ def delete_review(request, review_id):
             "Authorization": f"Bearer {token}"
         }
     )
+    cache.delete("landing_doctors")
 
     return redirect("admin_dashboard")
+
+def api_get(url):
+    return requests.get(url, timeout=30).json()
+
+
+def api_post(url, data):
+    return requests.post(url, json=data, timeout=30)
+
+
+def api_put(url):
+    return requests.put(url, timeout=30)
+
+
+def api_delete(url, headers=None):
+    return requests.delete(url, headers=headers, timeout=30)
