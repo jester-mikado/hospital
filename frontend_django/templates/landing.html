@@ -805,7 +805,7 @@ footer h4{
         <a href="#doctors">Doctors</a>
         <a href="#reviews">Reviews</a>
         <a href="#how">How it Works</a>
-        <a href="/login/" onclick="goLogin(event)" class="nav-cta">Book Appointment</a>
+        <a href="/login/" data-login-link="true" class="nav-cta">Book Appointment</a>
     </div>
 </nav>
 
@@ -814,7 +814,7 @@ footer h4{
     <div class="orb orb2"></div>
 
     <div class="hero-text">
-        <div class="hero-badge">Trusted digital healthcare platform</div>
+        <div class="hero-badge">Trusted patient care platform</div>
 
         <h1>
             World-Class
@@ -823,12 +823,12 @@ footer h4{
         </h1>
 
         <p class="hero-sub">
-            Book appointments with real doctors, manage slots, track appointment status,
-            and experience a complete hospital workflow powered by Django, FastAPI, and PostgreSQL.
+            Book appointments with trusted doctors, choose convenient consultation slots,
+            and receive compassionate care from experienced medical specialists.
         </p>
 
         <div class="hero-actions">
-            <a href="/login/" onclick="goLogin(event)" class="btn btn-primary">Book Appointment →</a>
+            <a href="/login/" data-login-link="true" class="btn btn-primary">Book Appointment →</a>
             <a href="#doctors" class="btn btn-ghost">Explore Doctors</a>
         </div>
 
@@ -858,8 +858,8 @@ footer h4{
             </div>
 
             <div class="floating-badge badge-right" style="flex-direction:column;gap:4px;min-width:130px">
-                <span style="font-size:10px;color:#777;text-transform:uppercase">Live Backend</span>
-                <span style="font-size:13px;font-weight:900">FastAPI + DB</span>
+                <span style="font-size:10px;color:#777;text-transform:uppercase">Quick Care</span>
+                <span style="font-size:13px;font-weight:900">Easy Booking</span>
             </div>
 
             <div class="floating-badge badge-bottom">
@@ -902,8 +902,8 @@ footer h4{
                 </svg>
             </div>
 
-            <div class="card-name">Clinic+ Hospital System</div>
-            <div class="card-role">Django · FastAPI · PostgreSQL</div>
+            <div class="card-name">Clinic+ Care Center</div>
+            <div class="card-role">Specialist Care · Easy Appointments</div>
 
             <div class="card-divider"></div>
 
@@ -926,8 +926,8 @@ footer h4{
 
             <div class="avail-row">
                 <div class="avail-dot"></div>
-                <span class="avail-txt">System running online</span>
-                <button class="book-mini" onclick="window.location.href='/login/'">Book</button>
+                <span class="avail-txt">Doctors available for care</span>
+                <button class="book-mini" onclick="window.location.assign('/login/')">Book</button>
             </div>
         </div>
     </div>
@@ -935,38 +935,38 @@ footer h4{
 
 <section class="section reveal" id="services">
     <div class="section-label">Our Services</div>
-    <h2 class="section-title">Complete Hospital<br>Workflow System</h2>
-    <p class="section-sub">Clinic+ handles real appointment booking, doctor slot management, patient history, reviews, and admin controls.</p>
+    <h2 class="section-title">Complete Patient<br>Care Experience</h2>
+    <p class="section-sub">Clinic+ helps patients find specialists, book consultations, track appointments, and share feedback after care.</p>
 
     <div class="grid">
         <div class="service-card reveal-left">
             <div class="s-num">01</div>
             <div class="service-icon">🧑‍⚕️</div>
             <h3>Patient Booking</h3>
-            <p>Patients can choose specialists, view doctors, check slots, and book appointments through the Django UI.</p>
+            <p>Patients can choose the right specialist, view available doctors, and book consultations with ease.</p>
         </div>
 
         <div class="service-card reveal">
             <div class="s-num">02</div>
             <div class="service-icon">📅</div>
             <h3>Doctor Slots</h3>
-            <p>Doctors can add slots, view existing slots, manage requests, accept or reject appointments.</p>
+            <p>Doctors manage consultation availability and respond to patient appointment requests quickly.</p>
         </div>
 
         <div class="service-card reveal-right">
             <div class="s-num">03</div>
             <div class="service-icon">🛡️</div>
             <h3>Admin Controls</h3>
-            <p>Admin can manage doctors, slots, appointments, and patient reviews with protected API access.</p>
+            <p>The clinic team keeps doctors, schedules, patient appointments, and feedback organized.</p>
         </div>
     </div>
 </section>
 
 <section class="section reveal" id="doctors">
     <div style="text-align:center">
-        <div class="section-label">Actual Doctors</div>
+        <div class="section-label">Our Doctors</div>
         <h2 class="section-title">Meet Our Expert Team</h2>
-        <p class="section-sub" style="margin:auto">Fetched directly from your FastAPI backend and Supabase PostgreSQL database.</p>
+        <p class="section-sub" style="margin:auto">Meet the available specialists currently ready for patient consultations.</p>
     </div>
 
     <div class="grid">
@@ -994,9 +994,9 @@ footer h4{
 
                     <span class="doc-spec">{{ doctor.specialist }}</span>
                     <h3>Dr. {{ doctor.name }}</h3>
-                    <p>Available for consultation through Clinic+ appointment system.</p>
+                    <p>Available for patient consultation through Clinic+.</p>
                     <br>
-                    <a href="/login/" onclick="goLogin(event)" class="btn btn-primary" style="padding:12px 22px;font-size:13px">Book Now →</a>
+                    <a href="/login/" data-login-link="true" class="btn btn-primary" style="padding:12px 22px;font-size:13px">Book Now →</a>
                 </div>
             {% endif %}
         {% empty %}
@@ -1012,7 +1012,7 @@ footer h4{
     <div style="text-align:center">
         <div class="section-label">Patient Stories</div>
         <h2 class="section-title">What Our Patients Say</h2>
-        <p class="section-sub" style="margin:auto">Actual reviews submitted after completed appointments.</p>
+        <p class="section-sub" style="margin:auto">Real feedback shared by patients after completed consultations.</p>
     </div>
 
     <div class="grid">
@@ -1065,28 +1065,28 @@ footer h4{
         <div class="step-item reveal">
             <div class="step-circle">📅</div>
             <h3>Select Slot</h3>
-            <p class="section-sub" style="font-size:13px;margin:auto">Pick available time slot.</p>
+            <p class="section-sub" style="font-size:13px;margin:auto">Pick a comfortable consultation time.</p>
         </div>
 
         <div class="step-item reveal">
             <div class="step-circle">✅</div>
             <h3>Book</h3>
-            <p class="section-sub" style="font-size:13px;margin:auto">Submit appointment request.</p>
+            <p class="section-sub" style="font-size:13px;margin:auto">Confirm your appointment details.</p>
         </div>
 
         <div class="step-item reveal-right">
             <div class="step-circle">⭐</div>
             <h3>Review</h3>
-            <p class="section-sub" style="font-size:13px;margin:auto">Rate after completion.</p>
+            <p class="section-sub" style="font-size:13px;margin:auto">Share your care experience.</p>
         </div>
     </div>
 </section>
 
 <section class="cta-section reveal">
     <div class="section-label">Start Now</div>
-    <h2 class="cta-title">Ready to Experience <em>Modern Healthcare?</em></h2>
-    <p class="cta-sub">Login to Clinic+ and book your appointment with real doctors from your hospital system.</p>
-    <a href="/login/" onclick="goLogin(event)" class="btn btn-primary">Login & Book Appointment →</a>
+    <h2 class="cta-title">Ready to Experience <em>Compassionate Care?</em></h2>
+    <p class="cta-sub">Login to Clinic+ and book an appointment with trusted medical specialists.</p>
+    <a href="/login/" data-login-link="true" class="btn btn-primary">Login to Book Appointment →</a>
 </section>
 
 <footer class="reveal">
@@ -1094,29 +1094,36 @@ footer h4{
         <div class="logo" style="margin-bottom:12px">
             Clinic<span style="color:var(--teal)">+</span>
         </div>
-        <p>Full-stack hospital management system using Django frontend, FastAPI backend and Supabase PostgreSQL.</p>
+        <p>A simple and reliable healthcare appointment platform for patients, doctors, and clinic staff.</p>
     </div>
 
     <div>
         <h4>Project</h4>
-        <p>Role-based access</p>
-        <p>Appointment workflow</p>
-        <p>Review system</p>
+        <p>Patient-centered care</p>
+        <p>Doctor consultations</p>
+        <p>Patient feedback</p>
     </div>
 
     <div>
-        <h4>Live System</h4>
+        <h4>Clinic Status</h4>
         <p>Doctors: {{ doctors|length }}</p>
         <p>Reviews: {{ reviews|length }}</p>
-        <p>Status: Online</p>
+        <p>Care Access: Available</p>
     </div>
 </footer>
 
 <script>
 function goLogin(event){
-    event.preventDefault();
-    window.location.href = "/login/";
+    if(event) event.preventDefault();
+    window.location.assign("/login/");
 }
+
+document.querySelectorAll('[data-login-link="true"]').forEach(link => {
+    link.addEventListener("click", function(event){
+        event.preventDefault();
+        window.location.assign("/login/");
+    });
+});
 
 const cursor = document.getElementById("cursor");
 const cursorDot = document.getElementById("cursorDot");
