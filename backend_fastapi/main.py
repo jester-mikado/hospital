@@ -555,3 +555,6 @@ def doctor_dashboard_data(
         "appointments": appointments,
         "slots": slots
     }
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
